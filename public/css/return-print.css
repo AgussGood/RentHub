@@ -1,0 +1,640 @@
+/* ============================================================
+   return-print.css
+   CSS khusus halaman cetak bukti pengembalian kendaraan
+   Letakkan di: public/css/return-print.css
+   ============================================================ */
+
+/* ── Reset & Base ─────────────────────────────────────────── */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    color: #000;
+    background: #fff;
+    line-height: 1.5;
+}
+
+/* ── Layout Halaman ──────────────────────────────────────── */
+.print-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 15mm 18mm 18mm 18mm;
+    background: #fff;
+    position: relative;
+}
+
+/* Preview di browser (layar) */
+@media screen {
+    body {
+        background: #e5e5e5;
+        padding: 20px 0;
+    }
+
+    .print-page {
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+        border-radius: 4px;
+    }
+
+    .print-actions {
+        width: 210mm;
+        margin: 0 auto 16px auto;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-print {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        background: #1a237e;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+    .btn-print:hover {
+        background: #283593;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #fff;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+    .btn-back:hover {
+        background: #f3f4f6;
+        color: #111;
+        text-decoration: none;
+    }
+
+    .btn-pay {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+    .btn-pay:hover {
+        background: #b91c1c;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .status-banner {
+        width: 210mm;
+        margin: 0 auto 14px auto;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .status-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .status-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .status-danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .status-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+}
+
+/* ── KOP SURAT ────────────────────────────────────────────── */
+.kop {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+
+.kop-logo {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kop-logo img {
+    max-width: 64px;
+    max-height: 64px;
+    object-fit: contain;
+}
+
+.kop-center {
+    flex: 1;
+    text-align: center;
+}
+
+.kop-perusahaan {
+    font-size: 15pt;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.kop-alamat {
+    font-size: 8.5pt;
+    color: #374151;
+    margin-top: 2px;
+}
+
+.kop-right {
+    width: 90px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.kop-nodoc-label {
+    font-size: 7.5pt;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.kop-nodoc {
+    font-size: 11pt;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.kop-date {
+    font-size: 8pt;
+    color: #374151;
+    margin-top: 2px;
+}
+
+.kop-line-top {
+    border: none;
+    border-top: 2.5pt solid #1a237e;
+    margin: 4px 0 2px;
+}
+
+.kop-line-bot {
+    border: none;
+    border-top: 0.75pt solid #1a237e;
+    margin: 0 0 10px;
+}
+
+/* ── Judul Dokumen ────────────────────────────────────────── */
+.doc-title-wrap {
+    text-align: center;
+    margin: 10px 0 14px;
+}
+
+.doc-title {
+    font-size: 14pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1.5pt solid #000;
+    display: inline-block;
+    padding-bottom: 3px;
+}
+
+.doc-subtitle {
+    font-size: 9pt;
+    color: #374151;
+    margin-top: 4px;
+}
+
+/* ── Section Heading ──────────────────────────────────────── */
+.section-heading {
+    font-size: 9.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #1a237e;
+    color: #fff;
+    padding: 4px 10px;
+    margin: 14px 0 6px;
+}
+
+/* ── Tabel Form (baris label : nilai) ────────────────────── */
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+}
+
+.form-table td {
+    padding: 3px 6px;
+    vertical-align: top;
+    font-size: 10pt;
+}
+
+.form-table .f-label {
+    width: 38%;
+    color: #374151;
+}
+
+.form-table .f-sep {
+    width: 6px;
+    text-align: center;
+    color: #374151;
+}
+
+.form-table .f-val {
+    border-bottom: 0.5pt solid #9ca3af;
+    min-width: 120px;
+}
+
+/* ── Tabel Data Kotak ─────────────────────────────────────── */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+    font-size: 10pt;
+}
+
+.data-table th {
+    background: #e8eaf6;
+    border: 0.5pt solid #9ca3af;
+    padding: 5px 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 9.5pt;
+}
+
+.data-table td {
+    border: 0.5pt solid #9ca3af;
+    padding: 4px 8px;
+    vertical-align: middle;
+}
+
+.data-table .td-center {
+    text-align: center;
+}
+
+.data-table .td-right {
+    text-align: right;
+}
+
+.data-table .td-label {
+    width: 36%;
+    background: #f9fafb;
+}
+
+.data-table .row-actual td {
+    background: #fffde7;
+    font-weight: 700;
+}
+
+.data-table .row-total td {
+    border-top: 1.5pt solid #000;
+    font-weight: 700;
+    font-size: 11pt;
+    background: #fef3c7;
+}
+
+.data-table .row-total .td-right {
+    color: #b91c1c;
+}
+
+.data-table .row-penalty td {
+    color: #b91c1c;
+}
+
+/* ── Ringkasan Keuangan ───────────────────────────────────── */
+.finance-wrap {
+    border: 1pt solid #9ca3af;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.finance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    font-size: 10pt;
+    border-bottom: 0.5pt solid #e5e7eb;
+}
+
+.finance-row:last-child {
+    border-bottom: none;
+}
+
+.finance-row.row-penalty {
+    color: #b91c1c;
+    background: #fff5f5;
+}
+
+.finance-row.row-total {
+    border-top: 1.5pt solid #000;
+    background: #fef3c7;
+    font-size: 12pt;
+    font-weight: 700;
+    padding: 7px 10px;
+}
+
+.finance-row.row-total .f-amount {
+    color: #b91c1c;
+}
+
+.finance-row.row-paid {
+    background: #d1fae5;
+    color: #065f46;
+    font-weight: 700;
+}
+
+.f-desc {
+    flex: 1;
+}
+
+.f-amount {
+    text-align: right;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-left: 12px;
+}
+
+/* ── Kotak Kerusakan ──────────────────────────────────────── */
+.damage-box {
+    border: 1pt solid #f87171;
+    background: #fff5f5;
+    border-radius: 3px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+}
+
+.damage-box-title {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #b91c1c;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    border-bottom: 0.5pt solid #fca5a5;
+    padding-bottom: 3px;
+}
+
+.damage-box p {
+    font-size: 9.5pt;
+    color: #7f1d1d;
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+/* ── Catatan Pelanggan ────────────────────────────────────── */
+.note-box {
+    border-left: 3pt solid #1a237e;
+    background: #f0f4ff;
+    padding: 7px 10px;
+    margin-bottom: 4px;
+    font-size: 10pt;
+}
+
+/* ── Status Badge ─────────────────────────────────────────── */
+.badge-status {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 99px;
+    font-size: 9pt;
+    font-weight: 700;
+    border: 1pt solid;
+}
+
+.badge-done {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #6ee7b7;
+}
+
+.badge-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fcd34d;
+}
+
+.badge-damage {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}
+
+/* ── Garis pemisah ────────────────────────────────────────── */
+.section-divider {
+    border: none;
+    border-top: 0.5pt solid #d1d5db;
+    margin: 12px 0;
+}
+
+/* ── Area Tanda Tangan ────────────────────────────────────── */
+.ttd-section {
+    margin-top: 18px;
+}
+
+.ttd-title {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+}
+
+.ttd-grid {
+    display: flex;
+    gap: 0;
+    border: 0.5pt solid #9ca3af;
+}
+
+.ttd-col {
+    flex: 1;
+    padding: 10px 10px 8px;
+    text-align: center;
+    border-right: 0.5pt solid #9ca3af;
+}
+
+.ttd-col:last-child {
+    border-right: none;
+}
+
+.ttd-col-label {
+    font-size: 9pt;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.ttd-col-name {
+    font-size: 8.5pt;
+    color: #374151;
+    margin-bottom: 48px;
+    /* ruang tanda tangan */
+}
+
+.ttd-col-line {
+    border-top: 0.75pt solid #000;
+    padding-top: 4px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    min-height: 18px;
+}
+
+/* ── Footer Bar ───────────────────────────────────────────── */
+.print-footer-bar {
+    position: absolute;
+    bottom: 10mm;
+    left: 18mm;
+    right: 18mm;
+    border-top: 0.75pt solid #9ca3af;
+    padding-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-left,
+.footer-right {
+    font-size: 7.5pt;
+    color: #6b7280;
+}
+
+.footer-center {
+    font-size: 7pt;
+    color: #9ca3af;
+    text-align: center;
+}
+
+/* ── Stempel / Watermark Status ──────────────────────────── */
+.stamp-wrap {
+    position: absolute;
+    top: 80mm;
+    right: 22mm;
+    opacity: 0.12;
+    transform: rotate(-25deg);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.stamp-text {
+    font-size: 40pt;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 6pt solid currentColor;
+    padding: 6px 14px;
+    border-radius: 8px;
+    display: inline-block;
+    line-height: 1.1;
+}
+
+.stamp-lunas {
+    color: #059669;
+}
+
+.stamp-denda {
+    color: #dc2626;
+}
+
+.stamp-proses {
+    color: #d97706;
+}
+
+/* ── Print Media Query ────────────────────────────────────── */
+@media print {
+    body {
+        background: #fff;
+        padding: 0;
+        font-size: 10pt;
+    }
+
+    .print-page {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 12mm 16mm 18mm 16mm;
+        margin: 0;
+        width: 100%;
+    }
+
+    .print-actions,
+    .status-banner,
+    .no-print {
+        display: none !important;
+    }
+
+    .section-heading {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .data-table th,
+    .data-table .row-actual td,
+    .data-table .row-total td,
+    .finance-row.row-total,
+    .finance-row.row-paid,
+    .damage-box,
+    .note-box,
+    .stamp-wrap {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    /* Hindari potong di tengah elemen penting */
+    .ttd-section,
+    .finance-wrap,
+    .damage-box,
+    .data-table {
+        page-break-inside: avoid;
+    }
+}
