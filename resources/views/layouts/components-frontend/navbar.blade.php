@@ -110,6 +110,14 @@
     color: #fff;
     background: var(--ac);
     flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .rh-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   .rh-chevron { opacity: 0.45; transition: transform 0.25s; }
@@ -119,7 +127,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    min-width: 190px;
+    min-width: 210px;
     background: #fff;
     border: 1px solid rgba(0,0,0,0.09);
     border-radius: 10px;
@@ -136,6 +144,41 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: all;
+  }
+
+  /* Info user di dalam dropdown */
+  .rh-dropdown-user {
+    padding: 10px 13px 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    margin-bottom: 4px;
+  }
+  .rh-dropdown-user-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0B132A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rh-dropdown-user-email {
+    font-size: 11.5px;
+    color: #9ca3af;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+  .rh-dropdown-user-role {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: #EFF6FF;
+    color: var(--ac);
+    margin-top: 5px;
   }
 
   .rh-dropdown-item {
@@ -229,6 +272,46 @@
 
   .rh-mobile-menu.open { display: flex; }
 
+  /* Info user di mobile */
+  .rh-mobile-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #EFF6FF;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .rh-mobile-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ac);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .rh-mobile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .rh-mobile-user-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0B132A;
+  }
+  .rh-mobile-user-email {
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
   .rh-mobile-link {
     display: flex;
     align-items: center;
@@ -272,7 +355,7 @@
 
 <nav class="rh-navbar">
 
-  {{-- Brand tanpa logo --}}
+  {{-- Brand --}}
   <a class="rh-brand" href="{{ url('/') }}">
     Rent<span>Hub</span>
   </a>
@@ -289,11 +372,13 @@
         Kendaraan
       </a>
     </li>
+    @auth
     <li>
       <a href="{{ route('bookings.history') }}" class="{{ request()->routeIs('bookings.history') ? 'active' : '' }}">
         Histori
       </a>
     </li>
+    @endauth
   </ul>
 
   {{-- Desktop Right --}}
@@ -301,15 +386,32 @@
     @auth
       <div class="rh-dropdown" id="rhDropdown">
         <button class="rh-dropdown-btn" onclick="rhToggleDD()">
+
+          {{-- Avatar: foto jika ada, inisial jika tidak --}}
           <div class="rh-avatar">
-            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+            @if(Auth::user()->avatar)
+              <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+            @else
+              {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+            @endif
           </div>
+
           {{ Auth::user()->name }}
+
           <svg class="rh-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M3 4.5L6 7.5L9 4.5" stroke="#0B132A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
+
         <div class="rh-dropdown-menu">
+
+          {{-- Info user --}}
+          <div class="rh-dropdown-user">
+            <div class="rh-dropdown-user-name">{{ Auth::user()->name }}</div>
+            <div class="rh-dropdown-user-email">{{ Auth::user()->email }}</div>
+            <span class="rh-dropdown-user-role">{{ ucfirst(Auth::user()->role) }}</span>
+          </div>
+
           @if(Auth::user()->role === 'admin')
             <a class="rh-dropdown-item" href="{{ url('/home') }}">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -318,23 +420,40 @@
                 <rect x="1.5" y="8" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.2"/>
                 <rect x="8" y="8" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.2"/>
               </svg>
-              Dashboard
+              Dashboard Admin
             </a>
           @else
-            <a class="rh-dropdown-item" href="{{ url('/profile') }}">
+            <a class="rh-dropdown-item {{ request()->routeIs('profile.*') ? 'active' : '' }}"
+               href="{{ route('profile.show') }}">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/>
                 <path d="M2 12C2 9.8 4.2 8 7 8C9.8 8 12 9.8 12 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
               </svg>
-              Profile
+              Profil Saya
+            </a>
+            <a class="rh-dropdown-item {{ request()->routeIs('bookings.history') ? 'active' : '' }}"
+               href="{{ route('bookings.history') }}">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 3.5H11.5M2.5 7H11.5M2.5 10.5H7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              Riwayat Booking
+              @php $pendingCount = Auth::user()->bookings()->where('status', 'pending')->count(); @endphp
+              @if($pendingCount > 0)
+                <span style="margin-left:auto;background:#EFF6FF;color:var(--ac);font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;">
+                  {{ $pendingCount }}
+                </span>
+              @endif
             </a>
           @endif
+
           <div class="rh-dropdown-sep"></div>
+
           <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="rh-dropdown-item danger">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M5.5 2.5H3C2.2 2.5 1.5 3.2 1.5 4V10C1.5 10.8 2.2 11.5 3 11.5H5.5M9.5 10L12.5 7L9.5 4M12.5 7H5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5.5 2.5H3C2.2 2.5 1.5 3.2 1.5 4V10C1.5 10.8 2.2 11.5 3 11.5H5.5M9.5 10L12.5 7L9.5 4M12.5 7H5.5"
+                      stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               Logout
             </button>
@@ -344,7 +463,8 @@
     @else
       <a href="{{ route('login') }}" class="rh-btn-login">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M9 2.5H11C11.8 2.5 12.5 3.2 12.5 4V10C12.5 10.8 11.8 11.5 11 11.5H9M6 10L9 7L6 4M9 7H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 2.5H11C11.8 2.5 12.5 3.2 12.5 4V10C12.5 10.8 11.8 11.5 11 11.5H9M6 10L9 7L6 4M9 7H1.5"
+                stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Login
       </a>
@@ -359,30 +479,62 @@
 
 {{-- Mobile Menu --}}
 <div class="rh-mobile-menu" id="rhMobileMenu">
+
+  @auth
+  {{-- Info user mobile --}}
+  <div class="rh-mobile-user">
+    <div class="rh-mobile-avatar">
+      @if(Auth::user()->avatar)
+        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+      @else
+        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+      @endif
+    </div>
+    <div>
+      <div class="rh-mobile-user-name">{{ Auth::user()->name }}</div>
+      <div class="rh-mobile-user-email">{{ Auth::user()->email }}</div>
+    </div>
+  </div>
+  @endauth
+
   <a class="rh-mobile-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">
     Beranda
   </a>
   <a class="rh-mobile-link {{ request()->routeIs('cars') ? 'active' : '' }}" href="{{ route('cars') }}">
     Kendaraan
   </a>
-  <a class="rh-mobile-link {{ request()->routeIs('bookings.history') ? 'active' : '' }}" href="{{ route('bookings.history') }}">
-    Histori
-  </a>
-  <div class="rh-mobile-sep"></div>
+
   @auth
-    <a class="rh-mobile-link" href="{{ Auth::user()->role === 'admin' ? url('/home') : url('/welcome') }}">
-      {{ Auth::user()->name }}
+  <a class="rh-mobile-link {{ request()->routeIs('bookings.history') ? 'active' : '' }}"
+     href="{{ route('bookings.history') }}">
+    Histori Booking
+  </a>
+
+  <div class="rh-mobile-sep"></div>
+
+  @if(Auth::user()->role === 'admin')
+    <a class="rh-mobile-link" href="{{ url('/home') }}">
+      Dashboard Admin
     </a>
-    <form action="{{ route('logout') }}" method="POST">
-      @csrf
-      <button type="submit" class="rh-mobile-link" style="color:#DC2626;">
-        Logout
-      </button>
-    </form>
   @else
-    <a class="rh-mobile-link" href="{{ route('login') }}" style="color:var(--ac);font-weight:600;">
-      Login
+    <a class="rh-mobile-link {{ request()->routeIs('profile.*') ? 'active' : '' }}"
+       href="{{ route('profile.show') }}">
+      Profil Saya
     </a>
+  @endif
+
+  <form action="{{ route('logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="rh-mobile-link" style="color:#DC2626;">
+      Logout
+    </button>
+  </form>
+
+  @else
+  <div class="rh-mobile-sep"></div>
+  <a class="rh-mobile-link" href="{{ route('login') }}" style="color:var(--ac);font-weight:600;">
+    Login
+  </a>
   @endauth
 </div>
 

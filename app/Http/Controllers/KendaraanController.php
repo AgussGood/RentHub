@@ -30,8 +30,12 @@ class KendaraanController extends Controller
             });
         }
 
-        // ambil data (bisa pakai paginate biar lebih keren)
-        $kendaraan = $query->paginate(10);
+        $kendaraan = $query->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $kendaraan,
+        ]);
 
         return view('kendaraan.index', compact('kendaraan'));
     }

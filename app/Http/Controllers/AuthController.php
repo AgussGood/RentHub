@@ -110,10 +110,15 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        // hapus token lama (optional)
-        $user->tokens()->delete();
-
-        $token = $user->createToken('api-token')->plainTextToken;
+        try {
+            $user->tokens()->delete(); // optional
+            $token = $user->createToken('api-token')->plainTextToken;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Token error',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
 
         return response()->json([
             'message' => 'Login berhasil',
@@ -122,7 +127,6 @@ class AuthController extends Controller
         ]);
     }
 
-    // ✅ REGISTER API
     public function apiRegister(Request $request)
     {
         $request->validate([
