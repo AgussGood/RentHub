@@ -14,7 +14,12 @@ class KendaraanController extends Controller
     {
         $query = Kendaraan::with('detail', 'images')->latest();
 
-        // FILTER STATUS
+        // 🔥 HANYA FILTER AVAILABLE UNTUK API (USER / FLUTTER)
+        if ($request->expectsJson()) {
+            $query->where('status', 'available');
+        }
+
+        // FILTER STATUS (opsional dari request)
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -32,11 +37,14 @@ class KendaraanController extends Controller
 
         $kendaraan = $query->get();
 
-        return response()->json([
-            'success' => true,
-            'data'    => $kendaraan,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'data'    => $kendaraan,
+            ]);
+        }
 
+        // ADMIN → VIEW (SEMUA DATA)
         return view('kendaraan.index', compact('kendaraan'));
     }
 
