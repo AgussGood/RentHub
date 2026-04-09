@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect()->route('welcome');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -50,11 +50,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     });
 });
 
+Route::get('/welcome', [FrontController::class, 'index'])->name('welcome');
+Route::get('/cars', [FrontController::class, 'cars'])->name('cars');
+Route::get('/car/{kendaraan}', [FrontController::class, 'show'])->name('car.show');
+Route::get('/kendaraan/{kendaraan}', [FrontController::class, 'show'])->name('kendaraan.show');
+
 Route::middleware(['auth', 'role:customer'])->group(function () {
-    Route::get('/welcome', [FrontController::class, 'index'])->name('welcome');
-    Route::get('/cars', [FrontController::class, 'cars'])->name('cars');
-    Route::get('/car/{kendaraan}', [FrontController::class, 'show'])->name('car.show');
-    Route::get('/kendaraan/{kendaraan}', [FrontController::class, 'show'])->name('kendaraan.show');
 
     Route::get('bookings/history', [BookingController::class, 'history'])->name('bookings.history');
     Route::get('bookings/create/{kendaraan}', [BookingController::class, 'create'])->name('bookings.create');

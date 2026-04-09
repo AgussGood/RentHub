@@ -1,6 +1,258 @@
 @extends('layouts.front')
 @section('content')
 
+<style>
+/* ══════════════════════════════════════
+   RESPONSIVE PATCH — mobile only
+   Tidak mengubah layout desktop sama sekali
+   ══════════════════════════════════════ */
+
+@media (max-width: 767.98px) {
+
+    /* ── HERO ── */
+    .hero-wrap {
+        min-height: 60vh !important;
+        padding: 60px 0 40px !important;
+    }
+
+    .hero-wrap .text h1 {
+        font-size: 26px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 14px !important;
+    }
+
+    .hero-wrap .text p {
+        font-size: 14px !important;
+    }
+
+    .hero-wrap .icon-wrap {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hero-wrap .icon-wrap .heading-title {
+        margin-left: 0 !important;
+        text-align: center;
+    }
+
+    /* ── FORM RENCANAKAN ── */
+    .request-form {
+        border-radius: 0 !important;
+        padding: 24px 18px !important;
+    }
+
+    .request-form h2 {
+        font-size: 20px !important;
+    }
+
+    .request-form .d-flex {
+        flex-direction: column !important;
+    }
+
+    .request-form .d-flex .form-group {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* ── SERVICES WRAP (3 icon steps) ── */
+    .services-wrap {
+        padding: 24px 18px !important;
+        border-radius: 0 !important;
+    }
+
+    .services-wrap h3 {
+        font-size: 17px !important;
+    }
+
+    .services-wrap .row.d-flex {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .services-wrap .col-md-4 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    .services-wrap .services {
+        padding: 16px !important;
+    }
+
+    /* ── CARD KENDARAAN ── */
+    .car-wrap .img {
+        height: 220px !important;
+    }
+
+    .car-wrap .text {
+        padding: 16px !important;
+    }
+
+    .car-wrap .text h2 {
+        font-size: 16px !important;
+    }
+
+    .car-wrap .text .d-flex {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .car-wrap .text p.d-flex {
+        flex-direction: row !important;
+        gap: 8px;
+    }
+
+    .car-wrap .text .btn {
+        flex: 1;
+        text-align: center;
+        padding: 8px 10px !important;
+        font-size: 13px !important;
+    }
+
+    /* ── ABOUT ── */
+    .ftco-about .col-md-6.img.img-2 {
+        min-height: 260px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    .ftco-about .wrap-about {
+        padding: 28px 18px !important;
+    }
+
+    .ftco-about .heading-section h2 {
+        font-size: 22px !important;
+    }
+
+    /* ── LAYANAN (4 icon) ── */
+    .services.services-2 {
+        padding: 20px 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .services.services-2 .heading {
+        font-size: 15px !important;
+    }
+
+    .services.services-2 p {
+        font-size: 13px !important;
+    }
+
+    /* ── INTRO CTA (jadi driver) ── */
+    .ftco-intro {
+        padding: 50px 0 !important;
+    }
+
+    .ftco-intro .heading-section-white h2 {
+        font-size: 20px !important;
+        line-height: 1.4 !important;
+    }
+
+    .ftco-intro .btn-lg {
+        font-size: 14px !important;
+        padding: 10px 22px !important;
+    }
+
+    /* ── ULASAN / REVIEW ── */
+    .blog-entry {
+        margin-bottom: 28px !important;
+    }
+
+    .blog-entry .block-20 {
+        height: 200px !important;
+    }
+
+    .blog-entry .text {
+        padding: 14px 0 !important;
+    }
+
+    .blog-entry .text h3 {
+        font-size: 16px !important;
+    }
+
+    .blog-entry .text p {
+        font-size: 13px !important;
+    }
+
+    .admin-response {
+        font-size: 12px !important;
+    }
+
+    /* ── COUNTER ── */
+    .ftco-counter .block-18 {
+        margin-bottom: 20px !important;
+        justify-content: center;
+    }
+
+    .ftco-counter .number {
+        font-size: 40px !important;
+    }
+
+    .ftco-counter span {
+        font-size: 13px !important;
+    }
+
+    /* ── PAGINATION ── */
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .page-link {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+    }
+
+    /* ── SECTION SPACING ── */
+    .ftco-section {
+        padding: 40px 0 !important;
+    }
+
+    .featured-top {
+        margin-top: 0 !important;
+    }
+
+    /* ── HEADING ── */
+    .heading-section h2 {
+        font-size: 22px !important;
+    }
+
+    .heading-section .subheading {
+        font-size: 12px !important;
+    }
+}
+
+/* ── TABLET (768–991px) ── */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    .hero-wrap .text h1 {
+        font-size: 32px !important;
+    }
+
+    .car-wrap .img {
+        height: 240px !important;
+    }
+
+    .services-wrap .col-md-4 {
+        margin-bottom: 12px;
+    }
+
+    .ftco-about .col-md-6.img.img-2 {
+        min-height: 300px !important;
+    }
+
+    .blog-entry .block-20 {
+        height: 220px !important;
+    }
+
+    .ftco-counter .number {
+        font-size: 44px !important;
+    }
+}
+</style>
 
     <div class="hero-wrap ftco-degree-bg" style="background-image: url('frontend/images/bg_1.jpg');"
         data-stellar-background-ratio="0.5">
@@ -125,7 +377,6 @@
                         @endphp
 
                         @if (!$useCarousel)
-                            {{-- Tampilkan langsung jika item <= 3 --}}
                             <div class="row">
                                 @foreach ($kendaraans as $kendaraan)
                                     <div class="col-md-4 mb-4">
@@ -165,7 +416,6 @@
                                 @endforeach
                             </div>
                         @else
-                            {{-- Pagination manual jika item > 3 --}}
                             <div class="row">
                                 @foreach ($paginatedKendaraans as $kendaraan)
                                     <div class="col-md-4 mb-4">
@@ -205,27 +455,21 @@
                                 @endforeach
                             </div>
 
-                            {{-- Tombol navigasi halaman --}}
                             @if ($totalPages > 1)
                                 <div class="row mt-4">
                                     <div class="col text-center">
                                         <nav>
                                             <ul class="pagination justify-content-center">
-                                                {{-- Tombol Sebelumnya --}}
                                                 <li class="page-item {{ $currentPage <= 1 ? 'disabled' : '' }}">
                                                     <a class="page-link" href="?halaman_kendaraan={{ $currentPage - 1 }}">
                                                         <span class="ion-ios-arrow-back"></span> Sebelumnya
                                                     </a>
                                                 </li>
-
-                                                {{-- Nomor Halaman --}}
                                                 @for ($i = 1; $i <= $totalPages; $i++)
                                                     <li class="page-item {{ $i === $currentPage ? 'active' : '' }}">
                                                         <a class="page-link" href="?halaman_kendaraan={{ $i }}">{{ $i }}</a>
                                                     </li>
                                                 @endfor
-
-                                                {{-- Tombol Berikutnya --}}
                                                 <li class="page-item {{ $currentPage >= $totalPages ? 'disabled' : '' }}">
                                                     <a class="page-link" href="?halaman_kendaraan={{ $currentPage + 1 }}">
                                                         Berikutnya <span class="ion-ios-arrow-forward"></span>
@@ -257,7 +501,6 @@
                     <div class="heading-section heading-section-white pl-md-5">
                         <span class="subheading">Tentang Kami</span>
                         <h2 class="mb-4">Selamat Datang di RentHub</h2>
-
                         <p>Kami adalah perusahaan penyewaan kendaraan terpercaya yang telah melayani ribuan pelanggan
                             dengan dedikasi tinggi dan komitmen terhadap kenyamanan perjalanan Anda.</p>
                         <p>Dengan armada kendaraan modern dan layanan pelanggan yang profesional, kami siap membantu
@@ -335,70 +578,66 @@
         </div>
     </section>
 
-
-<section class="ftco-section">
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-md-7 heading-section text-center ftco-animate">
-                <span class="subheading">Ulasan</span>
-                <h2>Ulasan Pelanggan</h2>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-7 heading-section text-center ftco-animate">
+                    <span class="subheading">Ulasan</span>
+                    <h2>Ulasan Pelanggan</h2>
+                </div>
             </div>
-        </div>
-        <div class="row d-flex">
-            @forelse ($reviews as $review)
-                <div class="col-md-4 d-flex ftco-animate">
-                    <div class="blog-entry justify-content-end">
-                        @if($review->kendaraan && $review->kendaraan->images->isNotEmpty())
-                            <a href="#" class="block-20"
-                                style="background-image: url('{{ asset('storage/' . $review->kendaraan->images->first()->image_path) }}');">
-                            </a>
-                        @else
-                            <a href="#" class="block-20"
-                                style="background-image: url('{{ asset('frontend/images/image_1.jpg') }}');">
-                            </a>
-                        @endif
-                        <div class="text pt-4">
-                            <div class="meta mb-3">
-                                <div><a href="#">{{ $review->created_at->format('d M Y') }}</a></div>
-                                <div><a href="#">{{ $review->user->name }}</a></div>
-                                <div>
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <span class="icon-star{{ $i <= $review->rating ? '' : '-o' }}" style="color: #f7c408;"></span>
-                                    @endfor
-                                    <span class="ml-1">({{ $review->rating }}/5)</span>
-                                </div>
-                            </div>
-                            <h3 class="heading mt-2">
-                                <a href="#">{{ $review->kendaraan->brand ?? 'N/A' }} {{ $review->kendaraan->model ?? '' }}</a>
-                            </h3>
-                            <p>{{ Str::limit($review->comment, 100) }}</p>
-                            
-                            @if($review->admin_response)
-                                <div class="admin-response mt-2 p-2" style="background-color: #f8f9fa; border-left: 3px solid #01d28e;">
-                                    <small><strong>Respons Admin:</strong></small>
-                                    <p class="mb-0"><small>{{ Str::limit($review->admin_response, 80) }}</small></p>
-                                </div>
+            <div class="row d-flex">
+                @forelse ($reviews as $review)
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="blog-entry justify-content-end">
+                            @if($review->kendaraan && $review->kendaraan->images->isNotEmpty())
+                                <a href="#" class="block-20"
+                                    style="background-image: url('{{ asset('storage/' . $review->kendaraan->images->first()->image_path) }}');">
+                                </a>
+                            @else
+                                <a href="#" class="block-20"
+                                    style="background-image: url('{{ asset('frontend/images/image_1.jpg') }}');">
+                                </a>
                             @endif
+                            <div class="text pt-4">
+                                <div class="meta mb-3">
+                                    <div><a href="#">{{ $review->created_at->format('d M Y') }}</a></div>
+                                    <div><a href="#">{{ $review->user->name }}</a></div>
+                                    <div>
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <span class="icon-star{{ $i <= $review->rating ? '' : '-o' }}" style="color: #f7c408;"></span>
+                                        @endfor
+                                        <span class="ml-1">({{ $review->rating }}/5)</span>
+                                    </div>
+                                </div>
+                                <h3 class="heading mt-2">
+                                    <a href="#">{{ $review->kendaraan->brand ?? 'N/A' }} {{ $review->kendaraan->model ?? '' }}</a>
+                                </h3>
+                                <p>{{ Str::limit($review->comment, 100) }}</p>
+                                @if($review->admin_response)
+                                    <div class="admin-response mt-2 p-2" style="background-color: #f8f9fa; border-left: 3px solid #01d28e;">
+                                        <small><strong>Respons Admin:</strong></small>
+                                        <p class="mb-0"><small>{{ Str::limit($review->admin_response, 80) }}</small></p>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-md-12 text-center">
-                    <p>Belum ada ulasan yang tersedia saat ini.</p>
-                </div>
-            @endforelse
-        </div>
-        
-        {{-- Pagination Ulasan --}}
-        @if($reviews->hasPages())
-            <div class="row mt-5">
-                <div class="col text-center">
-                    {{ $reviews->links() }}
-                </div>
+                @empty
+                    <div class="col-md-12 text-center">
+                        <p>Belum ada ulasan yang tersedia saat ini.</p>
+                    </div>
+                @endforelse
             </div>
-        @endif
-    </div>
-</section>
+            @if($reviews->hasPages())
+                <div class="row mt-5">
+                    <div class="col text-center">
+                        {{ $reviews->links() }}
+                    </div>
+                </div>
+            @endif
+        </div>
+    </section>
 
     <section class="ftco-counter ftco-section img bg-light" id="section-counter">
         <div class="overlay"></div>

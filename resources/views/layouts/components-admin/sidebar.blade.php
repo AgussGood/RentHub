@@ -114,7 +114,7 @@
 
 @php
     $isDashboard = request()->routeIs('home');
-    $isKendaraan = request()->routeIs('kendaraan.*');
+    $isKendaraan = request()->routeIs('admin.kendaraan.*');
     $isBookings  = request()->routeIs('admin.bookings.*');
     $isReturns   = request()->routeIs('admin.returns.*');
     $isReviews   = request()->routeIs('admin.reviews.*');
