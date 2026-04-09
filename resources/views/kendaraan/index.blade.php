@@ -474,7 +474,7 @@
                                 @endif
                             </p>
                             @if(!request('status') && !request('search'))
-                                <a href="{{ route('kendaraan.create') }}" class="kd-empty-btn">
+                                <a href="{{ route('admin.kendaraan.create') }}" class="kd-empty-btn">
                                     ＋ Tambah Kendaraan
                                 </a>
                             @endif
