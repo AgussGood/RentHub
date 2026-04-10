@@ -12,10 +12,12 @@ class PaymentApiController extends Controller
 {
     protected function configureMidtrans(): void
     {
-        Config::$serverKey    = config('midtrans.server_key');
+        Config::$serverKey    = trim((string) config('midtrans.server_key'));
+        Config::$clientKey    = trim((string) config('midtrans.client_key'));
         Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized  = true;
-        Config::$is3ds        = true;
+        Config::$isSanitized  = config('midtrans.is_sanitized', true);
+        Config::$is3ds        = config('midtrans.is_3ds', true);
+        Config::$curlOptions  = config('midtrans.curl_options', []);
     }
 
     /**

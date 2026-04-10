@@ -1,5 +1,7 @@
 <?php
 
+$defaultCaInfo = file_exists(base_path('cacert.pem')) ? base_path('cacert.pem') : null;
+
 return [
 
     /*
@@ -37,8 +39,13 @@ return [
     */
     'is_3ds'        => env('MIDTRANS_3DS', true),
 
-    'curl_options'  => [
-        CURLOPT_SSL_VERIFYPEER => false,
-    ],
+    'curl_options'  => array_filter([
+        CURLOPT_SSL_VERIFYPEER => env('MIDTRANS_SSL_VERIFYPEER', true),
+        CURLOPT_SSL_VERIFYHOST => (int) env('MIDTRANS_SSL_VERIFYHOST', 2),
+        CURLOPT_CONNECTTIMEOUT => (int) env('MIDTRANS_CONNECT_TIMEOUT', 15),
+        CURLOPT_TIMEOUT        => (int) env('MIDTRANS_TIMEOUT', 30),
+        CURLOPT_SSLVERSION     => env('MIDTRANS_FORCE_TLS12', true) ? CURL_SSLVERSION_TLSv1_2 : null,
+        CURLOPT_CAINFO         => env('MIDTRANS_CURL_CAINFO', $defaultCaInfo),
+    ], static fn ($value) => $value !== null && $value !== ''),
 
 ];
