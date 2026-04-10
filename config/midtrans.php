@@ -1,6 +1,12 @@
 <?php
 
-$defaultCaInfo = file_exists(base_path('cacert.pem')) ? base_path('cacert.pem') : null;
+$defaultCaInfo = null;
+
+if (file_exists('/etc/ssl/certs/ca-certificates.crt')) {
+    $defaultCaInfo = '/etc/ssl/certs/ca-certificates.crt';
+} elseif (file_exists(base_path('cacert.pem'))) {
+    $defaultCaInfo = base_path('cacert.pem');
+}
 
 return [
 
@@ -45,7 +51,20 @@ return [
         CURLOPT_SSL_VERIFYHOST => (int) env('MIDTRANS_SSL_VERIFYHOST', 2),
         CURLOPT_CONNECTTIMEOUT => (int) env('MIDTRANS_CONNECT_TIMEOUT', 15),
         CURLOPT_TIMEOUT        => (int) env('MIDTRANS_TIMEOUT', 30),
-        CURLOPT_SSLVERSION     => env('MIDTRANS_FORCE_TLS12', true) ? CURL_SSLVERSION_TLSv1_2 : null,
+        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+        CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
+        CURLOPT_SSLVERSION     => env('MIDTRANS_FORCE_TLS12', false) ? CURL_SSLVERSION_TLSv1_2 : null,
+        CURLOPT_CAINFO         => env('MIDTRANS_CURL_CAINFO', $defaultCaInfo),
+    ], static fn ($value) => $value !== null && $value !== ''),
+
+    'curl_options_fallback' => array_filter([
+        CURLOPT_HTTPHEADER    => [],
+        CURLOPT_SSL_VERIFYPEER => env('MIDTRANS_SSL_VERIFYPEER', true),
+        CURLOPT_SSL_VERIFYHOST => (int) env('MIDTRANS_SSL_VERIFYHOST', 2),
+        CURLOPT_CONNECTTIMEOUT => (int) env('MIDTRANS_CONNECT_TIMEOUT', 15),
+        CURLOPT_TIMEOUT        => (int) env('MIDTRANS_TIMEOUT', 30),
+        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+        CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
         CURLOPT_CAINFO         => env('MIDTRANS_CURL_CAINFO', $defaultCaInfo),
     ], static fn ($value) => $value !== null && $value !== ''),
 

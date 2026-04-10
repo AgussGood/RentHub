@@ -8,20 +8,50 @@ use App\Models\ReturnKendaraan;
 use Illuminate\Http\Request;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Throwable;
 
 class PaymentController extends Controller
 {
     /**
      * Konfigurasi Midtrans
      */
-    protected function configureMidtrans(): void
+    protected function configureMidtrans(bool $useFallbackCurlOptions = false): void
     {
         Config::$serverKey    = trim((string) config('midtrans.server_key'));
         Config::$clientKey    = trim((string) config('midtrans.client_key'));
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized  = config('midtrans.is_sanitized', true);
         Config::$is3ds        = config('midtrans.is_3ds', true);
-        Config::$curlOptions  = config('midtrans.curl_options', []);
+        Config::$curlOptions  = $useFallbackCurlOptions
+            ? config('midtrans.curl_options_fallback', [])
+            : config('midtrans.curl_options', []);
+    }
+
+    protected function executeMidtransRequestWithRetry(callable $callback, string $operation)
+    {
+        try {
+            return $callback();
+        } catch (Throwable $e) {
+            if (! $this->isMidtransHandshakeError($e)) {
+                throw $e;
+            }
+
+            \Log::warning("Midtrans {$operation} handshake error. Retrying with fallback cURL options.", [
+                'message' => $e->getMessage(),
+            ]);
+
+            $this->configureMidtrans(true);
+            return $callback();
+        }
+    }
+
+    protected function isMidtransHandshakeError(Throwable $e): bool
+    {
+        $message = strtolower($e->getMessage());
+
+        return str_contains($message, 'handshake failure')
+            || str_contains($message, 'sslv3 alert handshake failure')
+            || (str_contains($message, 'curl error') && str_contains($message, 'ssl'));
     }
 
     /**
@@ -152,7 +182,10 @@ class PaymentController extends Controller
                 ],
             ];
 
-            $snapToken = Snap::getSnapToken($params);
+            $snapToken = $this->executeMidtransRequestWithRetry(
+                fn () => Snap::getSnapToken($params),
+                'create snap token'
+            );
 
             // ✅ Simpan ke session
             session([
@@ -191,7 +224,10 @@ class PaymentController extends Controller
         try {
             $this->configureMidtrans();
 
-            $notif = new \Midtrans\Notification();
+            $notif = $this->executeMidtransRequestWithRetry(
+                fn () => new \Midtrans\Notification(),
+                'notification callback'
+            );
 
             $orderId       = $notif->order_id;
             $transactionId = $notif->transaction_id;
@@ -307,7 +343,10 @@ class PaymentController extends Controller
                 \Log::info('Checking transaction status for: ' . $orderId);
 
                 // ✅ Cek status ke Midtrans API
-                $status = \Midtrans\Transaction::status($orderId);
+                $status = $this->executeMidtransRequestWithRetry(
+                    fn () => \Midtrans\Transaction::status($orderId),
+                    'check transaction status'
+                );
 
                 \Log::info('Midtrans API Response:', [
                     'order_id'           => $orderId,
@@ -532,7 +571,10 @@ $return->refresh();
         try {
             $this->configureMidtrans();
 
-            $notif = new \Midtrans\Notification();
+            $notif = $this->executeMidtransRequestWithRetry(
+                fn () => new \Midtrans\Notification(),
+                'penalty notification callback'
+            );
 
             $orderId       = $notif->order_id;
             $transactionId = $notif->transaction_id;
@@ -631,7 +673,10 @@ $return->refresh();
                 \Log::info('Checking transaction status for: ' . $orderId);
 
                 // ✅ Cek status ke Midtrans API
-                $status = \Midtrans\Transaction::status($orderId);
+                $status = $this->executeMidtransRequestWithRetry(
+                    fn () => \Midtrans\Transaction::status($orderId),
+                    'check penalty transaction status'
+                );
 
                 \Log::info('Midtrans API Response:', [
                     'order_id'           => $orderId,
@@ -786,7 +831,10 @@ $return->refresh();
                 ];
             }
 
-            $snapToken = Snap::getSnapToken($params);
+            $snapToken = $this->executeMidtransRequestWithRetry(
+                fn () => Snap::getSnapToken($params),
+                'create penalty snap token'
+            );
 
             // ✅ Simpan order_id langsung ke database
             PenaltyPayment::updateOrCreate(

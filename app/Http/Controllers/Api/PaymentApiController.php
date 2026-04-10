@@ -7,17 +7,47 @@ use App\Models\Payments;
 use Illuminate\Http\Request;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Throwable;
 
 class PaymentApiController extends Controller
 {
-    protected function configureMidtrans(): void
+    protected function configureMidtrans(bool $useFallbackCurlOptions = false): void
     {
         Config::$serverKey    = trim((string) config('midtrans.server_key'));
         Config::$clientKey    = trim((string) config('midtrans.client_key'));
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized  = config('midtrans.is_sanitized', true);
         Config::$is3ds        = config('midtrans.is_3ds', true);
-        Config::$curlOptions  = config('midtrans.curl_options', []);
+        Config::$curlOptions  = $useFallbackCurlOptions
+            ? config('midtrans.curl_options_fallback', [])
+            : config('midtrans.curl_options', []);
+    }
+
+    protected function executeMidtransRequestWithRetry(callable $callback, string $operation)
+    {
+        try {
+            return $callback();
+        } catch (Throwable $e) {
+            if (! $this->isMidtransHandshakeError($e)) {
+                throw $e;
+            }
+
+            \Log::warning("Midtrans API {$operation} handshake error. Retrying with fallback cURL options.", [
+                'message' => $e->getMessage(),
+            ]);
+
+            $this->configureMidtrans(true);
+            return $callback();
+        }
+    }
+
+    protected function isMidtransHandshakeError(Throwable $e): bool
+    {
+        $message = strtolower($e->getMessage());
+
+        return str_contains($message, 'handshake failure')
+            || str_contains($message, 'sslv3 alert handshake failure')
+            || (str_contains($message, 'curl error') && str_contains($message, 'ssl'));
     }
 
     /**
@@ -140,7 +170,10 @@ class PaymentApiController extends Controller
                 ],
             ];
 
-            $snapToken = Snap::getSnapToken($params);
+            $snapToken = $this->executeMidtransRequestWithRetry(
+                fn () => Snap::getSnapToken($params),
+                'create snap token'
+            );
 
             // Simpan order_id ke session/db agar bisa diverifikasi
             \Cache::put('midtrans_order_' . $booking->id, $orderId, now()->addHour());
