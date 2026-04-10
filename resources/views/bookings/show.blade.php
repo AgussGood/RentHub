@@ -92,14 +92,14 @@
                                         <h5 class="section-title mb-3">
                                             <i class="fa fa-user-circle text-primary mr-2"></i>Informasi Pelanggan
                                         </h5>
-                                        <div class="pl-4">
+                                        <div class="pl-3">
                                             <div class="info-row mb-2">
                                                 <small class="text-muted d-block">Nama Lengkap</small>
                                                 <strong>{{ $booking->user->name }}</strong>
                                             </div>
                                             <div class="info-row mb-2">
                                                 <small class="text-muted d-block">Alamat Email</small>
-                                                <strong>{{ $booking->user->email }}</strong>
+                                                <strong class="email-text">{{ $booking->user->email }}</strong>
                                             </div>
                                             <div class="info-row">
                                                 <small class="text-muted d-block">Nomor Telepon</small>
@@ -114,7 +114,7 @@
                                         <h5 class="section-title mb-3">
                                             <i class="fa fa-calendar-alt text-success mr-2"></i>Periode Sewa
                                         </h5>
-                                        <div class="pl-4">
+                                        <div class="pl-3">
                                             <div class="info-row mb-2">
                                                 <small class="text-muted d-block">Tanggal Mulai</small>
                                                 <strong>{{ \Carbon\Carbon::parse($booking->start_date)->isoFormat('D MMMM Y') }}</strong>
@@ -145,24 +145,22 @@
                                 <h5 class="section-title mb-3">
                                     <i class="fa fa-car text-info mr-2"></i>Informasi Kendaraan
                                 </h5>
-                                <div class="row align-items-center pl-4">
-                                    <div class="col-md-5 mb-3 mb-md-0">
-                                        <div class="vehicle-image rounded overflow-hidden shadow-sm"
-                                            style="height: 200px; background: #f8f9fa;">
-                                            @php
-                                                $primaryImage = $booking->kendaraan->images->where('is_primary', 1)->first();
-                                                $imageUrl = $primaryImage 
-                                                    ? asset('storage/' . $primaryImage->image_path)
-                                                    : asset('frontend/images/car-1.jpg');
-                                            @endphp
-                                            <img src="{{ $imageUrl }}"
-                                                alt="{{ $booking->kendaraan->brand }}"
-                                                style="width: 100%; height: 100%; object-fit: cover;">
-                                        </div>
+                                <div class="vehicle-card">
+                                    {{-- Gambar Kendaraan --}}
+                                    <div class="vehicle-image-wrapper">
+                                        @php
+                                            $primaryImage = $booking->kendaraan->images->where('is_primary', 1)->first();
+                                            $imageUrl = $primaryImage 
+                                                ? asset('storage/' . $primaryImage->image_path)
+                                                : asset('frontend/images/car-1.jpg');
+                                        @endphp
+                                        <img src="{{ $imageUrl }}"
+                                            alt="{{ $booking->kendaraan->brand }}"
+                                            class="vehicle-img">
                                     </div>
-                                    <div class="col-md-7">
-                                        <h4 class="font-weight-bold mb-3">{{ $booking->kendaraan->brand }}
-                                            {{ $booking->kendaraan->model }}</h4>
+                                    {{-- Detail Kendaraan --}}
+                                    <div class="vehicle-details">
+                                        <h4 class="font-weight-bold mb-3">{{ $booking->kendaraan->brand }} {{ $booking->kendaraan->model }}</h4>
                                         <div class="row">
                                             <div class="col-6 mb-3">
                                                 <small class="text-muted d-block">Tahun</small>
@@ -206,7 +204,7 @@
                                             <i class="fa fa-credit-card text-warning mr-2"></i>Detail Pembayaran
                                         </h5>
                                         @if ($booking->payment)
-                                            <div class="pl-4">
+                                            <div class="pl-3">
                                                 <div class="info-row mb-2">
                                                     <small class="text-muted d-block">Metode Pembayaran</small>
                                                     <strong class="text-capitalize">
@@ -240,7 +238,7 @@
                                                 </div>
                                             </div>
                                         @else
-                                            <div class="pl-4">
+                                            <div class="pl-3">
                                                 <div class="alert alert-warning mb-0">
                                                     <i class="fa fa-exclamation-triangle mr-2"></i>
                                                     <strong>Pembayaran Menunggu</strong>
@@ -256,7 +254,7 @@
                                         <h5 class="section-title mb-3">
                                             <i class="fa fa-clipboard-check text-danger mr-2"></i>Status Booking
                                         </h5>
-                                        <div class="pl-4">
+                                        <div class="pl-3">
                                             <div class="info-row mb-2">
                                                 <small class="text-muted d-block">Status Saat Ini</small>
                                                 @php
@@ -372,13 +370,13 @@
                         {{-- Tombol Aksi --}}
                         <div class="card-footer bg-white border-0 text-center py-4">
                             <div class="action-buttons-wrapper">
-                                <button onclick="window.print()" class="btn btn-outline-primary btn-lg px-5 action-btn">
+                                <button onclick="window.print()" class="btn btn-outline-primary btn-lg px-4 action-btn">
                                     <i class="fa fa-print mr-2"></i>Cetak Bukti
                                 </button>
 
                                 @if ($booking->status === 'pending' && !$booking->payment)
                                     <a href="{{ route('payments.create', $booking->id) }}"
-                                        class="btn btn-success btn-lg px-5 action-btn">
+                                        class="btn btn-success btn-lg px-4 action-btn">
                                         <i class="fa fa-credit-card mr-2"></i>Bayar Sekarang
                                     </a>
 
@@ -387,7 +385,7 @@
                                           style="display: inline;">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-danger btn-lg px-5 action-btn">
+                                        <button type="submit" class="btn btn-danger btn-lg px-4 action-btn">
                                             <i class="fa fa-times-circle mr-2"></i>Batalkan Booking
                                         </button>
                                     </form>
@@ -395,25 +393,25 @@
 
                                 @if ($booking->status === 'confirmed' && !$booking->pengembalian)
                                     <a href="{{ route('returns.create', $booking->id) }}"
-                                        class="btn btn-warning btn-lg px-5 action-btn">
+                                        class="btn btn-warning btn-lg px-4 action-btn">
                                         <i class="fa fa-undo mr-2"></i>Kembalikan Kendaraan
                                     </a>
                                 @endif
 
                                 @if ($booking->pengembalian)
                                     <a href="{{ route('returns.show', $booking->pengembalian->id) }}"
-                                        class="btn btn-info btn-lg px-5 action-btn">
+                                        class="btn btn-info btn-lg px-4 action-btn">
                                         <i class="fa fa-file-invoice mr-2"></i>Lihat Bukti Pengembalian
                                     </a>
                                 @endif
 
                                 <a href="{{ route('bookings.history') }}"
-                                    class="btn btn-secondary btn-lg px-5 action-btn">
-                                    <i class="fa fa-history mr-2"></i>Lihat Riwayat
+                                    class="btn btn-secondary btn-lg px-4 action-btn">
+                                    <i class="fa fa-history mr-2"></i>Riwayat
                                 </a>
 
-                                <a href="{{ route('welcome') }}" class="btn btn-primary btn-lg px-5 action-btn">
-                                    <i class="fa fa-home mr-2"></i>Kembali ke Beranda
+                                <a href="{{ route('welcome') }}" class="btn btn-primary btn-lg px-4 action-btn">
+                                    <i class="fa fa-home mr-2"></i>Beranda
                                 </a>
                             </div>
                         </div>
@@ -437,11 +435,63 @@
 
 @push('styles')
     <style>
+        /* ===== VEHICLE CARD - PERBAIKAN UTAMA ===== */
+        .vehicle-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Wrapper gambar: tidak ada tinggi fixed, biarkan gambar menentukan tinggi */
+        .vehicle-image-wrapper {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Gambar mengisi lebar penuh, aspect ratio terjaga, tidak terpotong */
+        .vehicle-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            max-height: 280px;
+        }
+
+        .vehicle-details {
+            width: 100%;
+        }
+
+        /* Di layar besar (md ke atas), tampilkan berdampingan */
+        @media (min-width: 768px) {
+            .vehicle-card {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .vehicle-image-wrapper {
+                flex: 0 0 45%;
+                max-width: 45%;
+            }
+
+            .vehicle-img {
+                height: 220px;
+                object-fit: cover;
+            }
+
+            .vehicle-details {
+                flex: 1;
+            }
+        }
+
+        /* ===== ACTION BUTTONS ===== */
         .action-buttons-wrapper {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
@@ -449,38 +499,85 @@
             margin: 0 !important;
         }
 
-        @media (max-width: 768px) {
-            .action-buttons-wrapper {
-                gap: 10px;
-            }
-
-            .action-btn {
-                flex: 1 1 calc(50% - 10px);
-                min-width: 150px;
-            }
-        }
-
+        /* Di HP kecil: tombol penuh lebar */
         @media (max-width: 576px) {
             .action-buttons-wrapper {
-                gap: 8px;
                 flex-direction: column;
+                gap: 8px;
             }
 
             .action-btn {
                 width: 100%;
                 flex: 1 1 100%;
             }
-        }
 
-        @media print {
-            .card-footer {
-                display: none !important;
+            .card-body {
+                padding: 1.25rem 1rem !important;
+            }
+
+            .pl-3 {
+                padding-left: 0.5rem !important;
+            }
+
+            .section-title {
+                font-size: 0.95rem;
+            }
+
+            /* Email panjang agar tidak overflow */
+            .email-text {
+                word-break: break-all;
+                font-size: 0.9rem;
+            }
+
+            /* Tabel harga agar tidak overflow di HP */
+            .table td {
+                font-size: 0.85rem;
+                padding: 0.6rem 0.5rem !important;
+            }
+
+            h4.font-weight-bold {
+                font-size: 1.1rem;
             }
         }
 
+        /* Di HP sedang (577–767px): tombol 2 kolom */
+        @media (min-width: 577px) and (max-width: 767px) {
+            .action-btn {
+                flex: 1 1 calc(50% - 10px);
+                min-width: 140px;
+            }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            .card-footer,
+            .hero-wrap,
+            .breadcrumbs,
+            nav,
+            footer,
+            .btn,
+            button {
+                display: none !important;
+            }
+
+            body * { visibility: hidden; }
+            .card, .card * { visibility: visible; }
+            .card {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none !important;
+            }
+
+            .card-body { padding: 20px !important; }
+            .alert { border: 1px solid #ddd !important; page-break-inside: avoid; }
+        }
+
+        /* ===== GENERAL STYLES ===== */
         .section-title {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 8px;
         }
@@ -490,11 +587,11 @@
         }
 
         .info-row {
-            padding: 8px 0;
+            padding: 6px 0;
         }
 
         .info-row small {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             letter-spacing: 0.3px;
             font-weight: 500;
         }
@@ -502,14 +599,6 @@
         .info-row strong {
             font-size: 0.95rem;
             color: #2d3748;
-        }
-
-        .vehicle-image {
-            transition: transform 0.3s ease;
-        }
-
-        .vehicle-image:hover {
-            transform: scale(1.02);
         }
 
         .badge {
@@ -521,56 +610,9 @@
             border-color: #e2e8f0;
         }
 
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            .card,
-            .card * {
-                visibility: visible;
-            }
-
-            .card {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                box-shadow: none !important;
-            }
-
-            .hero-wrap,
-            .card-footer,
-            .breadcrumbs,
-            nav,
-            footer,
-            .btn,
-            button {
-                display: none !important;
-            }
-
-            .card-body {
-                padding: 20px !important;
-            }
-
-            .alert {
-                border: 1px solid #ddd !important;
-                page-break-inside: avoid;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 1.5rem 1rem !important;
-            }
-
-            .pl-4 {
-                padding-left: 1rem !important;
-            }
-
-            .section-title {
-                font-size: 1rem;
-            }
+        /* Pastikan gambar dalam section kendaraan tidak overflow */
+        .vehicle-image-wrapper img {
+            max-width: 100%;
         }
     </style>
 @endpush

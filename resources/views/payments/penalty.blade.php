@@ -21,15 +21,16 @@
     </section>
 
     @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
+        <div class="container mt-3">
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
 
     <section class="ftco-section bg-light">
         <div class="container">
@@ -59,18 +60,22 @@
                                 <div class="card-body">
                                     @php
                                         $primaryImage = $return->booking->kendaraan->images->where('is_primary', 1)->first();
-                                        $imageUrl = $primaryImage 
+                                        $imageUrl = $primaryImage
                                             ? asset('storage/' . $primaryImage->image_path)
                                             : asset('frontend/images/car-1.jpg');
                                     @endphp
-                                    <div class="mb-3 rounded overflow-hidden" style="height:180px; background:#f8f9fa;">
+
+                                    {{-- Gambar Kendaraan: tidak terpotong di HP --}}
+                                    <div class="penalty-img-wrapper mb-3">
                                         <img src="{{ $imageUrl }}"
-                                            alt="{{ $return->booking->kendaraan->brand }}" class="w-100 h-100"
-                                            style="object-fit:cover;">
+                                            alt="{{ $return->booking->kendaraan->brand }}"
+                                            class="penalty-img-responsive">
                                     </div>
 
-                                    <h4 class="mb-3">{{ $return->booking->kendaraan->brand }}
-                                        {{ $return->booking->kendaraan->model }}</h4>
+                                    <h4 class="mb-3 vehicle-name">
+                                        {{ $return->booking->kendaraan->brand }}
+                                        {{ $return->booking->kendaraan->model }}
+                                    </h4>
 
                                     <div class="border-bottom pb-2 mb-2">
                                         <small class="text-muted">ID Pengembalian</small>
@@ -87,28 +92,28 @@
                                     <h6 class="font-weight-bold mb-3">Rincian Biaya:</h6>
 
                                     @if ($return->late_fee > 0)
-                                        <div class="d-flex justify-content-between mb-2">
+                                        <div class="fee-row mb-2">
                                             <span><i class="fa fa-clock text-warning mr-1"></i>Denda Keterlambatan</span>
-                                            <strong class="text-warning">Rp
-                                                {{ number_format($return->late_fee, 0, ',', '.') }}</strong>
+                                            <strong class="text-warning">Rp {{ number_format($return->late_fee, 0, ',', '.') }}</strong>
                                         </div>
-                                        <small class="text-muted d-block mb-3">{{ $return->late_days }} hari terlambat
-                                            × 20%</small>
+                                        <small class="text-muted d-block mb-3">
+                                            {{ $return->late_days }} hari terlambat × 20%
+                                        </small>
                                     @endif
 
                                     @if ($return->damage_fee > 0)
-                                        <div class="d-flex justify-content-between mb-2">
+                                        <div class="fee-row mb-2">
                                             <span><i class="fa fa-wrench text-danger mr-1"></i>Biaya Perbaikan</span>
-                                            <strong class="text-danger">Rp
-                                                {{ number_format($return->damage_fee, 0, ',', '.') }}</strong>
+                                            <strong class="text-danger">Rp {{ number_format($return->damage_fee, 0, ',', '.') }}</strong>
                                         </div>
                                     @endif
 
                                     <hr class="my-3">
 
-                                    <div class="d-flex justify-content-between align-items-center p-3 bg-danger text-white rounded">
-                                        <h5 class="mb-0">Total Denda</h5>
-                                        <h3 class="mb-0">Rp {{ number_format($return->total_penalty, 0, ',', '.') }}</h3>
+                                    {{-- Total Denda --}}
+                                    <div class="total-denda-box">
+                                        <span class="total-denda-label">Total Denda</span>
+                                        <span class="total-denda-amount">Rp {{ number_format($return->total_penalty, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -121,15 +126,15 @@
                                     <h5 class="mb-0"><i class="fa fa-credit-card mr-2"></i>Metode Pembayaran</h5>
                                 </div>
                                 <div class="card-body">
+
                                     {{-- Midtrans --}}
                                     <div class="card border-primary mb-3">
                                         <div class="card-header bg-light">
-                                            <h6 class="mb-0"><i class="fa fa-wallet mr-2"></i>Pembayaran Digital (Midtrans)
-                                            </h6>
+                                            <h6 class="mb-0"><i class="fa fa-wallet mr-2"></i>Pembayaran Digital (Midtrans)</h6>
                                         </div>
                                         <div class="card-body">
-                                            <p class="mb-3">Bayar menggunakan berbagai metode digital:</p>
-                                            <ul class="mb-3">
+                                            <p class="mb-2">Bayar menggunakan berbagai metode digital:</p>
+                                            <ul class="payment-list mb-3">
                                                 <li>E-Wallet (GoPay, OVO, DANA, ShopeePay)</li>
                                                 <li>Transfer Bank (BCA, Mandiri, BNI, BRI)</li>
                                                 <li>Kartu Kredit/Debit</li>
@@ -139,8 +144,8 @@
                                                 method="POST">
                                                 @csrf
                                                 <div class="custom-control custom-checkbox mb-3">
-                                                    <input type="checkbox" class="custom-control-input" id="agree_terms_midtrans"
-                                                        name="agree_terms" value="1" required>
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="agree_terms_midtrans" name="agree_terms" value="1" required>
                                                     <label class="custom-control-label" for="agree_terms_midtrans">
                                                         Saya setuju dengan syarat dan ketentuan pembayaran denda
                                                     </label>
@@ -176,9 +181,9 @@
 
                                                 <div class="form-group">
                                                     <label>Bukti Pembayaran (Opsional)</label>
-                                                    <input type="file" name="payment_proof" class="form-control"
+                                                    <input type="file" name="payment_proof" class="form-control-file"
                                                         accept="image/*">
-                                                    <small class="text-muted">Format: JPG, PNG (Max: 2MB)</small>
+                                                    <small class="text-muted">Format: JPG, PNG (Maks: 2MB)</small>
                                                 </div>
 
                                                 <div class="custom-control custom-checkbox mb-3">
@@ -210,3 +215,160 @@
         </div>
     </section>
 @endsection
+
+@push('styles')
+<style>
+    /* ===== GAMBAR KENDARAAN - TIDAK TERPOTONG ===== */
+    .penalty-img-wrapper {
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f8f9fa;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* Mobile: tinggi otomatis, gambar utuh */
+    .penalty-img-responsive {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        max-height: 260px;
+    }
+
+    /* Desktop: cover dengan tinggi tetap */
+    @media (min-width: 768px) {
+        .penalty-img-responsive {
+            height: 180px;
+            object-fit: cover;
+        }
+    }
+
+    /* ===== NAMA KENDARAAN ===== */
+    .vehicle-name {
+        font-size: 1.15rem;
+        word-break: break-word;
+        line-height: 1.4;
+    }
+
+    /* ===== BARIS BIAYA (mengganti d-flex justify-content-between) ===== */
+    .fee-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .fee-row span {
+        font-size: 0.9rem;
+    }
+
+    /* ===== TOTAL DENDA BOX ===== */
+    .total-denda-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #dc3545;
+        color: #fff;
+        padding: 14px 16px;
+        border-radius: 8px;
+    }
+
+    .total-denda-label {
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .total-denda-amount {
+        font-size: 1.3rem;
+        font-weight: 700;
+        word-break: break-all;
+    }
+
+    /* Di HP sangat kecil: stack vertikal */
+    @media (max-width: 400px) {
+        .total-denda-box {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .total-denda-amount {
+            font-size: 1.15rem;
+        }
+    }
+
+    /* ===== LIST METODE PEMBAYARAN ===== */
+    .payment-list {
+        padding-left: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    .payment-list li {
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+    }
+
+    /* ===== CARD BODY & FORM DI HP ===== */
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .card-header h5,
+        .card-header h6 {
+            font-size: 0.95rem;
+        }
+
+        /* Mencegah auto-zoom di iOS */
+        .form-control,
+        select.form-control {
+            font-size: 16px;
+        }
+
+        .btn-lg {
+            font-size: 1rem;
+            padding: 0.6rem 1rem;
+        }
+
+        /* Checkbox label lebih rapi */
+        .custom-control-label {
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        /* Error list rapi */
+        .alert ul {
+            padding-left: 1.2rem;
+            margin-bottom: 0;
+        }
+
+        .vehicle-name {
+            font-size: 1rem;
+        }
+    }
+
+    /* ===== CONTAINER PADDING DI HP ===== */
+    @media (max-width: 576px) {
+        .ftco-section .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+    }
+
+    /* ===== PASTIKAN GAMBAR TIDAK OVERFLOW ===== */
+    .penalty-img-wrapper img {
+        max-width: 100%;
+    }
+
+    /* ===== FILE INPUT LEBIH RAPI ===== */
+    .form-control-file {
+        display: block;
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 4px 0;
+    }
+</style>
+@endpush

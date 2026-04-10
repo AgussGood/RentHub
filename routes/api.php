@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\PaymentApiController;
 use App\Http\Controllers\Api\ProfileApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'apiLogin']);
@@ -50,5 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [PaymentApiController::class, 'store']);
         Route::post('/midtrans/{bookingId}', [PaymentApiController::class, 'midtransToken']);
         Route::get('/{bookingId}', [PaymentApiController::class, 'show']);
+
+    Route::get('/reviews', [ReviewController::class, 'apiIndex']);
+
     });
 });

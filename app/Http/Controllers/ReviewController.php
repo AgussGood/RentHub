@@ -26,6 +26,33 @@ class ReviewController extends Controller
         return view('reviews.create', compact('booking'));
     }
 
+    public function apiIndex(Request $request)
+    {
+        $query = Review::with(['user:id,name', 'kendaraan:id,brand,model'])
+            ->where('status', 'published');
+
+        // Filter opsional berdasarkan rating minimum
+        if ($request->filled('min_rating')) {
+            $query->where('rating', '>=', $request->min_rating);
+        }
+
+        // Urutkan: rating tertinggi dulu, lalu terbaru
+        $query->orderByDesc('rating')->orderByDesc('created_at');
+
+        $limit   = min((int) ($request->limit ?? 10), 50);
+        $reviews = $query->take($limit)->get();
+
+        // Hitung rata-rata dari semua ulasan published
+        $avgRating = Review::where('status', 'published')->avg('rating');
+
+        return response()->json([
+            'success'    => true,
+            'data'       => $reviews,
+            'avg_rating' => round((float) $avgRating, 1),
+            'total'      => $reviews->count(),
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

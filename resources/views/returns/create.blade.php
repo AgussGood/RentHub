@@ -44,44 +44,44 @@
                                 <div class="card-body">
 
                                     {{-- Gambar Kendaraan --}}
-                                    <div class="mb-3 rounded overflow-hidden" style="height:180px; background:#f8f9fa;">
-                                        @php
-                                            $primaryImage = $booking->kendaraan->images->where('is_primary', 1)->first();
-                                            $imageUrl = $primaryImage 
-                                                ? asset('storage/' . $primaryImage->image_path)
-                                                : asset('frontend/images/car-1.jpg');
-                                        @endphp
+                                    @php
+                                        $primaryImage = $booking->kendaraan->images->where('is_primary', 1)->first();
+                                        $imageUrl = $primaryImage
+                                            ? asset('storage/' . $primaryImage->image_path)
+                                            : asset('frontend/images/car-1.jpg');
+                                    @endphp
+                                    <div class="vehicle-img-wrapper mb-3">
                                         <img src="{{ $imageUrl }}"
-                                            alt="{{ $booking->kendaraan->brand }}" class="w-100 h-100"
-                                            style="object-fit:cover;">
+                                            alt="{{ $booking->kendaraan->brand }}"
+                                            class="vehicle-img-responsive">
                                     </div>
 
-                                    <h4 class="mb-3">
+                                    <h4 class="mb-3 vehicle-name">
                                         {{ $booking->kendaraan->brand }} {{ $booking->kendaraan->model }}
                                     </h4>
 
                                     {{-- Detail Booking --}}
                                     <div class="booking-details">
 
-                                        <div class="d-flex justify-content-between py-2 border-bottom">
-                                            <span class="text-muted">ID Booking</span>
+                                        <div class="detail-row">
+                                            <span class="text-muted detail-label">ID Booking</span>
                                             <strong>#{{ str_pad($booking->id, 6, '0', STR_PAD_LEFT) }}</strong>
                                         </div>
 
-                                        <div class="d-flex justify-content-between py-2 border-bottom">
-                                            <span class="text-muted">Tanggal Mulai</span>
+                                        <div class="detail-row">
+                                            <span class="text-muted detail-label">Tanggal Mulai</span>
                                             <strong>{{ \Carbon\Carbon::parse($booking->start_date)->isoFormat('D MMM Y') }}</strong>
                                         </div>
 
-                                        <div class="d-flex justify-content-between py-2 border-bottom">
-                                            <span class="text-muted">Tanggal Pengembalian</span>
+                                        <div class="detail-row">
+                                            <span class="text-muted detail-label">Tgl. Pengembalian</span>
                                             <strong class="text-danger">
                                                 {{ \Carbon\Carbon::parse($booking->end_date)->isoFormat('D MMM Y') }}
                                             </strong>
                                         </div>
 
-                                        <div class="d-flex justify-content-between py-2">
-                                            <span class="text-muted">Durasi</span>
+                                        <div class="detail-row border-0">
+                                            <span class="text-muted detail-label">Durasi</span>
                                             <span class="badge badge-primary">
                                                 {{ $booking->total_days }} hari
                                             </span>
@@ -177,10 +177,10 @@
                                             <label for="customer_notes">
                                                 <i class="fa fa-sticky-note mr-1"></i>Catatan Tambahan (Opsional)
                                             </label>
-                                            <textarea class="form-control @error('customer_notes') is-invalid @enderror" 
-                                                id="customer_notes" 
+                                            <textarea class="form-control @error('customer_notes') is-invalid @enderror"
+                                                id="customer_notes"
                                                 name="customer_notes"
-                                                rows="3" 
+                                                rows="3"
                                                 placeholder="Permintaan khusus atau informasi yang perlu kami ketahui...">{{ old('customer_notes') }}</textarea>
                                             @error('customer_notes')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -214,3 +214,119 @@
         </div>
     </section>
 @endsection
+
+@push('styles')
+<style>
+    /* ===== GAMBAR KENDARAAN - TIDAK TERPOTONG ===== */
+    .vehicle-img-wrapper {
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f8f9fa;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* Gambar mengisi lebar penuh, tinggi otomatis, tidak terpotong */
+    .vehicle-img-responsive {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        max-height: 260px;
+    }
+
+    /* Di layar besar: sedikit lebih tinggi dengan cover agar proporsional */
+    @media (min-width: 768px) {
+        .vehicle-img-responsive {
+            height: 180px;
+            object-fit: cover;
+        }
+    }
+
+    /* ===== NAMA KENDARAAN ===== */
+    .vehicle-name {
+        font-size: 1.2rem;
+        word-break: break-word;
+    }
+
+    /* ===== DETAIL ROW - mengganti d-flex justify-content-between ===== */
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;          /* Agar tidak overflow di HP kecil */
+        gap: 4px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .detail-label {
+        font-size: 0.85rem;
+        flex-shrink: 0;
+        margin-right: 8px;
+    }
+
+    /* Di HP kecil: label dan nilai stack vertikal jika terlalu panjang */
+    @media (max-width: 400px) {
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    /* ===== CARD BODY PADDING DI HP ===== */
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .card-header h5 {
+            font-size: 1rem;
+        }
+
+        /* Form controls lebih nyaman di HP */
+        .form-control {
+            font-size: 16px; /* Mencegah zoom otomatis di iOS */
+        }
+
+        /* Alert cara kerja lebih ringkas */
+        .alert ol {
+            padding-left: 1.2rem;
+        }
+
+        .alert ol li {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        /* Tombol submit */
+        .btn-lg {
+            font-size: 1rem;
+            padding: 0.6rem 1rem;
+        }
+
+        .vehicle-name {
+            font-size: 1.05rem;
+        }
+    }
+
+    /* ===== CONTAINER SECTION ===== */
+    @media (max-width: 576px) {
+        .ftco-section .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+    }
+
+    /* ===== PASTIKAN GAMBAR TIDAK OVERFLOW ===== */
+    .vehicle-img-wrapper img {
+        max-width: 100%;
+    }
+
+    /* ===== ALERT LOKASI ===== */
+    .alert-light p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+</style>
+@endpush

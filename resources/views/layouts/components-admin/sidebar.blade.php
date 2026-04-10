@@ -132,7 +132,7 @@
 <div class="kd-sidenav-header">
     <div class="kd-logo">🚗</div>
     <div>
-        <div style="font-weight:700;">RentCar</div>
+        <div style="font-weight:700;">RentHub</div>
         <div style="font-size:11px;color:#94a3b8;">Admin Panel</div>
     </div>
 </div>
