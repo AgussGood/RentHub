@@ -40,6 +40,7 @@ return [
     'is_3ds'        => env('MIDTRANS_3DS', true),
 
     'curl_options'  => array_filter([
+        CURLOPT_HTTPHEADER    => [],
         CURLOPT_SSL_VERIFYPEER => env('MIDTRANS_SSL_VERIFYPEER', true),
         CURLOPT_SSL_VERIFYHOST => (int) env('MIDTRANS_SSL_VERIFYHOST', 2),
         CURLOPT_CONNECTTIMEOUT => (int) env('MIDTRANS_CONNECT_TIMEOUT', 15),
