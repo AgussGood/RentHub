@@ -37,4 +37,8 @@ return [
     */
     'is_3ds'        => env('MIDTRANS_3DS', true),
 
+    'curl_options'  => [
+        CURLOPT_SSL_VERIFYPEER => false,
+    ],
+
 ];

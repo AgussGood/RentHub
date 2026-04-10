@@ -16,17 +16,10 @@ class PaymentController extends Controller
      */
     protected function configureMidtrans(): void
     {
-        \Midtrans\Config::$serverKey    = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('midtrans.is_production');
-        \Midtrans\Config::$isSanitized  = true;
-        \Midtrans\Config::$is3ds        = true;
-
-        \Midtrans\Config::$curlOptions = [
-            CURLOPT_SSLVERSION     => CURL_SSLVERSION_TLSv1_2,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_SSL_VERIFYPEER => true,
-        ];
-
+        Config::$serverKey    = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized  = true;
+        Config::$is3ds        = true;
     }
 
     /**
@@ -513,16 +506,16 @@ class PaymentController extends Controller
         PenaltyPayment::create([
             'return_id'      => $return->id,
             'payment_method' => $request->payment_method,
-            'amount'         => $return->total_penalty,
+            'amount' => $return->total_penalty,
             'payment_date'   => now(),
-            'payment_status' => 'paid',
+            'payment_status' => 'paid', 
             'payment_proof'  => $proofPath,
         ]);
 
         $return->penalty_paid = true;
-        $return->save();
+$return->save();
 
-        $return->refresh();
+$return->refresh();
 
         $return->booking->update(['status' => 'completed']);
 
