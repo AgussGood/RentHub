@@ -53,7 +53,6 @@ return [
         CURLOPT_TIMEOUT        => (int) env('MIDTRANS_TIMEOUT', 30),
         CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
         CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
-        CURLOPT_SSLVERSION     => env('MIDTRANS_FORCE_TLS12', false) ? CURL_SSLVERSION_TLSv1_2 : null,
         CURLOPT_CAINFO         => env('MIDTRANS_CURL_CAINFO', $defaultCaInfo),
     ], static fn ($value) => $value !== null && $value !== ''),
 
