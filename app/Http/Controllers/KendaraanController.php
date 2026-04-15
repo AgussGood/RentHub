@@ -67,6 +67,25 @@ class KendaraanController extends Controller
             'transmission'    => 'nullable',
             'seat_count'      => 'nullable|numeric|min:1',
             'images.*'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'type.required'           => 'Jenis kendaraan wajib dipilih.',
+            'brand.required'          => 'Merek kendaraan wajib diisi.',
+            'model.required'          => 'Model kendaraan wajib diisi.',
+            'year.required'           => 'Tahun kendaraan wajib diisi.',
+            'year.numeric'            => 'Tahun harus berupa angka.',
+            'year.min'                => 'Tahun tidak boleh kurang dari 1900.',
+            'year.max'                => 'Tahun tidak boleh melebihi tahun depan.',
+            'plate_number.required'   => 'Nomor polisi wajib diisi.',
+            'plate_number.unique'     => 'Nomor polisi sudah terdaftar.',
+            'price_per_day.required'  => 'Harga sewa per hari wajib diisi.',
+            'price_per_day.numeric'   => 'Harga sewa harus berupa angka.',
+            'price_per_day.min'       => 'Harga sewa tidak boleh negatif.',
+            'engine_capacity.numeric' => 'Kapasitas mesin harus berupa angka.',
+            'seat_count.numeric'      => 'Jumlah kursi harus berupa angka.',
+            'seat_count.min'          => 'Jumlah kursi minimal 1.',
+            'images.*.image'          => 'File harus berupa gambar.',
+            'images.*.mimes'          => 'Format gambar harus jpeg, png, jpg, atau gif.',
+            'images.*.max'            => 'Ukuran gambar maksimal 2 MB.',
         ]);
 
         DB::beginTransaction();
@@ -163,6 +182,18 @@ class KendaraanController extends Controller
             'price_per_day' => 'required|numeric',
             'color'         => 'required',
             'status'        => 'required',
+        ], [
+            'type.required'          => 'Jenis kendaraan wajib dipilih.',
+            'brand.required'         => 'Merek kendaraan wajib diisi.',
+            'model.required'         => 'Model kendaraan wajib diisi.',
+            'year.required'          => 'Tahun kendaraan wajib diisi.',
+            'year.numeric'           => 'Tahun harus berupa angka.',
+            'plate_number.required'  => 'Nomor polisi wajib diisi.',
+            'plate_number.unique'    => 'Nomor polisi sudah digunakan kendaraan lain.',
+            'price_per_day.required' => 'Harga sewa per hari wajib diisi.',
+            'price_per_day.numeric'  => 'Harga sewa harus berupa angka.',
+            'color.required'         => 'Warna kendaraan wajib diisi.',
+            'status.required'        => 'Status kendaraan wajib dipilih.',
         ]);
 
         DB::beginTransaction();

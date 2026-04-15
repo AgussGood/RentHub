@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ProfileApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReturnController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'apiLogin']);
@@ -51,8 +52,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [PaymentApiController::class, 'store']);
         Route::post('/midtrans/{bookingId}', [PaymentApiController::class, 'midtransToken']);
         Route::get('/{bookingId}', [PaymentApiController::class, 'show']);
-
-    Route::get('/reviews', [ReviewController::class, 'apiIndex']);
-
     });
+    
+Route::get('/reviews', [ReviewController::class, 'apiIndex']);
+
+});
+
+Route::middleware('auth:sanctum')->prefix('returns')->group(function () {
+    Route::get('/', [ReturnController::class, 'index']);
+    Route::post('/', [ReturnController::class, 'apiStore']);
+    Route::get('/{id}', [ReturnController::class, 'apiShow']);
+    Route::post('/{id}/penalty/pay', [ReturnController::class, 'payPenalty']);
 });

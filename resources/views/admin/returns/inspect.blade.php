@@ -323,10 +323,7 @@
                                     ✔ Baik — Keausan normal, goresan kecil masih wajar
                                 </option>
                                 <option value="fair" {{ old('condition') == 'fair' ? 'selected' : '' }}>
-                                    ⚠ Cukup — Keausan terlihat, perlu perbaikan ringan
-                                </option>
-                                <option value="damaged" {{ old('condition') == 'damaged' ? 'selected' : '' }}>
-                                    ✖ Rusak — Kerusakan signifikan, perlu perbaikan besar
+                                    ⚠ Rusak — Keausan terlihat, perlu perbaikan ringan
                                 </option>
                             </select>
                             @error('condition')

@@ -20,15 +20,17 @@
 
     /* ── HERO ── */
     .hero-wrap {
-        min-height: 100svh !important;
-        min-height: 100vh !important; /* fallback */
-        padding: 0 !important;
-        background-size: cover !important;
-        background-position: center center !important;
-        background-attachment: scroll !important; /* WAJIB di iOS/Android */
-        display: flex !important;
-        align-items: center !important;
-    }
+    min-height: 100svh !important;
+    min-height: 100vh !important;
+    padding: 0 !important;
+    background-size: contain !important;    
+    background-position: center top !important;
+    background-attachment: scroll !important;
+    background-repeat: no-repeat !important;
+    background-color: #0d1b2a !important;  
+    display: flex !important;
+    align-items: center !important;
+}
 
     .hero-wrap .overlay {
         position: absolute !important;
@@ -420,88 +422,6 @@
     </div>
 
     {{-- ============================================================
-         FORM + STEPS
-         ============================================================ --}}
-    <section class="ftco-section ftco-no-pt bg-light">
-        <div class="container">
-            <div class="row no-gutters">
-                <div class="col-md-12 featured-top">
-                    <div class="row no-gutters">
-                        <div class="col-md-4 d-flex align-items-center">
-                            <form action="#" class="request-form ftco-animate bg-primary">
-                                <h2>Rencanakan Perjalanan Anda</h2>
-                                <div class="form-group">
-                                    <label class="label">Lokasi Penjemputan</label>
-                                    <input type="text" class="form-control" placeholder="Kota, Bandara, Stasiun, dll">
-                                </div>
-                                <div class="form-group">
-                                    <label class="label">Lokasi Pengantaran</label>
-                                    <input type="text" class="form-control" placeholder="Kota, Bandara, Stasiun, dll">
-                                </div>
-                                <div class="d-flex">
-                                    <div class="form-group mr-2">
-                                        <label class="label">Tanggal Penjemputan</label>
-                                        <input type="text" class="form-control" id="book_pick_date" placeholder="Tanggal">
-                                    </div>
-                                    <div class="form-group ml-2">
-                                        <label class="label">Tanggal Pengantaran</label>
-                                        <input type="text" class="form-control" id="book_off_date" placeholder="Tanggal">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="label">Waktu Penjemputan</label>
-                                    <input type="text" class="form-control" id="time_pick" placeholder="Waktu">
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Sewa Kendaraan Sekarang" class="btn btn-secondary py-3 px-4">
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-md-8 d-flex align-items-center">
-                            <div class="services-wrap rounded-right w-100">
-                                <h3 class="heading-section mb-4">Cara Lebih Baik untuk Menyewa Kendaraan Impian Anda</h3>
-                                <div class="row d-flex mb-4">
-                                    <div class="col-md-4 d-flex align-self-stretch ftco-animate">
-                                        <div class="services w-100 text-center">
-                                            <div class="icon d-flex align-items-center justify-content-center">
-                                                <span class="flaticon-route"></span>
-                                            </div>
-                                            <div class="text w-100">
-                                                <h3 class="heading mb-2">Pilih Lokasi Penjemputan Anda</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 d-flex align-self-stretch ftco-animate">
-                                        <div class="services w-100 text-center">
-                                            <div class="icon d-flex align-items-center justify-content-center">
-                                                <span class="flaticon-handshake"></span>
-                                            </div>
-                                            <div class="text w-100">
-                                                <h3 class="heading mb-2">Pilih Penawaran Terbaik</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 d-flex align-self-stretch ftco-animate">
-                                        <div class="services w-100 text-center">
-                                            <div class="icon d-flex align-items-center justify-content-center">
-                                                <span class="flaticon-rent"></span>
-                                            </div>
-                                            <div class="text w-100">
-                                                <h3 class="heading mb-2">Reservasi Kendaraan Sewa Anda</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p><a href="#" class="btn btn-primary py-3 px-4">Reservasi Kendaraan Impian Anda</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ============================================================
          KENDARAAN UNGGULAN
          ============================================================ --}}
     <section class="ftco-section ftco-no-pt bg-light">
@@ -660,7 +580,6 @@
                         <p>Dengan armada kendaraan modern dan layanan pelanggan yang profesional, kami siap membantu
                             Anda menemukan solusi transportasi yang tepat untuk setiap kebutuhan. Dari perjalanan bisnis
                             hingga liburan keluarga, RentHub selalu hadir sebagai mitra perjalanan terpercaya Anda.</p>
-                        <p><a href="#" class="btn btn-primary py-3 px-4">Cari Kendaraan</a></p>
                     </div>
                 </div>
             </div>
@@ -722,25 +641,6 @@
                             <p>Jelajahi keindahan kota dengan paket wisata lengkap dan pemandu yang berpengalaman.</p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ============================================================
-         INTRO CTA
-         ============================================================ --}}
-    <section class="ftco-section ftco-intro"
-             style="background-image: url('{{ asset('frontend/images/bg_3.jpg') }}');
-                    background-size: cover;
-                    background-position: center;
-                    background-attachment: scroll;">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row justify-content-end">
-                <div class="col-md-6 heading-section heading-section-white ftco-animate">
-                    <h2 class="mb-3">Ingin Mendapatkan Penghasilan Bersama Kami? Jangan Lewatkan Kesempatan Ini.</h2>
-                    <a href="#" class="btn btn-primary btn-lg">Jadilah Pengemudi</a>
                 </div>
             </div>
         </div>
@@ -811,49 +711,6 @@
                     </div>
                 </div>
             @endif
-        </div>
-    </section>
-
-    {{-- ============================================================
-         COUNTER
-         ============================================================ --}}
-    <section class="ftco-counter ftco-section img bg-light" id="section-counter">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text text-border d-flex align-items-center">
-                            <strong class="number" data-number="60">0</strong>
-                            <span>Tahun <br>Pengalaman</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text text-border d-flex align-items-center">
-                            <strong class="number" data-number="1090">0</strong>
-                            <span>Total <br>Kendaraan</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text text-border d-flex align-items-center">
-                            <strong class="number" data-number="2590">0</strong>
-                            <span>Pelanggan <br>Puas</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
-                    <div class="block-18">
-                        <div class="text d-flex align-items-center">
-                            <strong class="number" data-number="67">0</strong>
-                            <span>Total <br>Cabang</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 

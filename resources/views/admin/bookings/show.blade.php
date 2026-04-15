@@ -830,8 +830,7 @@
                                 $condMap = [
                                     'excellent' => ['class' => 'bk-cond-excellent', 'label' => 'Sangat Baik'],
                                     'good' => ['class' => 'bk-cond-good', 'label' => 'Baik'],
-                                    'fair' => ['class' => 'bk-cond-fair', 'label' => 'Cukup'],
-                                    'poor' => ['class' => 'bk-cond-poor', 'label' => 'Buruk'],
+                                    'fair' => ['class' => 'bk-cond-fair', 'label' => 'Rusak'],
                                 ];
                                 $cond = $condMap[$ret->condition] ?? [
                                     'class' => 'bk-cond-fair',

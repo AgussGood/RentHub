@@ -78,7 +78,14 @@
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
 }
-.kd-input.is-invalid, .kd-select.is-invalid { border-color: #dc2626; }
+.kd-input.is-invalid, .kd-select.is-invalid {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+.kd-input.is-valid, .kd-select.is-valid {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+}
 .kd-input::placeholder { color: #9ca3af; }
 
 .kd-error { font-size: 11px; color: #dc2626; margin-top: 5px; }
@@ -100,6 +107,7 @@
 }
 .kd-upload-zone:hover,
 .kd-upload-zone.dragover { border-color: #6366f1; background: #f5f3ff; }
+.kd-upload-zone.is-invalid { border-color: #dc2626; background: #fff5f5; }
 .kd-upload-icon  { font-size: 28px; margin-bottom: 8px; }
 .kd-upload-label { font-size: 13px; color: #6c757d; margin-bottom: 3px; }
 .kd-upload-label strong { color: #6366f1; }
@@ -268,7 +276,7 @@
     @endif
 
     <form action="{{ route('admin.kendaraan.store') }}" method="POST"
-          enctype="multipart/form-data" id="createForm">
+          enctype="multipart/form-data" id="createForm" novalidate>
         @csrf
 
         <div class="kd-grid">
@@ -315,7 +323,7 @@
                                     Tipe Kendaraan <span class="req">*</span>
                                 </label>
                                 <select name="type" id="type"
-                                        class="kd-select {{ $errors->has('type') ? 'is-invalid' : '' }}" required>
+                                        class="kd-select {{ $errors->has('type') ? 'is-invalid' : '' }}">
                                     <option value="">— Pilih Tipe —</option>
                                     <option value="mobil"   {{ old('type') == 'mobil'   ? 'selected' : '' }}>🚗 Mobil</option>
                                     <option value="motor"   {{ old('type') == 'motor'   ? 'selected' : '' }}>🏍 Motor</option>
@@ -332,7 +340,7 @@
                                 <input type="text" name="brand" id="brand"
                                        class="kd-input {{ $errors->has('brand') ? 'is-invalid' : '' }}"
                                        value="{{ old('brand') }}"
-                                       placeholder="Contoh: Toyota, Honda" required>
+                                       placeholder="Contoh: Toyota, Honda">
                                 @error('brand') <p class="kd-error">{{ $message }}</p> @enderror
                             </div>
 
@@ -343,7 +351,7 @@
                                 <input type="text" name="model" id="model"
                                        class="kd-input {{ $errors->has('model') ? 'is-invalid' : '' }}"
                                        value="{{ old('model') }}"
-                                       placeholder="Contoh: Avanza, Beat" required>
+                                       placeholder="Contoh: Avanza, Beat">
                                 @error('model') <p class="kd-error">{{ $message }}</p> @enderror
                             </div>
 
@@ -355,7 +363,7 @@
                                        class="kd-input {{ $errors->has('year') ? 'is-invalid' : '' }}"
                                        value="{{ old('year') }}"
                                        min="1900" max="{{ date('Y') + 1 }}"
-                                       placeholder="{{ date('Y') }}" required>
+                                       placeholder="{{ date('Y') }}">
                                 @error('year') <p class="kd-error">{{ $message }}</p> @enderror
                             </div>
 
@@ -366,7 +374,7 @@
                                 <input type="text" name="color" id="color"
                                        class="kd-input {{ $errors->has('color') ? 'is-invalid' : '' }}"
                                        value="{{ old('color') }}"
-                                       placeholder="Contoh: Putih, Hitam, Silver" required>
+                                       placeholder="Contoh: Putih, Hitam, Silver">
                                 @error('color') <p class="kd-error">{{ $message }}</p> @enderror
                             </div>
 
@@ -378,8 +386,7 @@
                                        class="kd-input {{ $errors->has('plate_number') ? 'is-invalid' : '' }}"
                                        value="{{ old('plate_number') }}"
                                        placeholder="Contoh: B 1234 ABC"
-                                       style="font-family:monospace; font-weight:700; letter-spacing:0.08em;"
-                                       required>
+                                       style="font-family:monospace; font-weight:700; letter-spacing:0.08em;">
                                 @error('plate_number') <p class="kd-error">{{ $message }}</p> @enderror
                             </div>
 
@@ -391,7 +398,7 @@
                                        class="kd-input {{ $errors->has('price_per_day') ? 'is-invalid' : '' }}"
                                        value="{{ old('price_per_day') }}"
                                        min="0" step="1000"
-                                       placeholder="Contoh: 300000" required>
+                                       placeholder="Contoh: 300000">
                                 <p class="kd-hint" id="pricePreview"></p>
                                 @error('price_per_day') <p class="kd-error">{{ $message }}</p> @enderror
                             </div>
@@ -567,44 +574,271 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    /* ── Helpers ────────────────────────────────────────────── */
+    /* ══════════════════════════════════════════════════════════
+       HELPERS
+       ══════════════════════════════════════════════════════════ */
     function formatRp(val) {
         return 'Rp ' + parseInt(val || 0).toLocaleString('id-ID');
     }
-    function set(id, val) {
+    function setText(id, val) {
         const el = document.getElementById(id);
         if (el) el.textContent = val || '—';
     }
 
-    /* ── Preview real-time ──────────────────────────────────── */
-    const brandInput    = document.getElementById('brand');
-    const modelInput    = document.getElementById('model');
-    const plateInput    = document.getElementById('plate_number');
-    const yearInput     = document.getElementById('year');
-    const colorInput    = document.getElementById('color');
-    const typeSelect    = document.getElementById('type');
-    const fuelSelect    = document.getElementById('fuel_type');
-    const transSelect   = document.getElementById('transmission');
-    const seatInput     = document.getElementById('seat_count');
-    const priceInput    = document.getElementById('price_per_day');
-    const pricePreview  = document.getElementById('pricePreview');
-    const previewName   = document.getElementById('previewName');
-    const previewPlate  = document.getElementById('previewPlate');
+    /* ══════════════════════════════════════════════════════════
+       VALIDASI — RULES
+       ══════════════════════════════════════════════════════════ */
+    const rules = {
+        type: {
+            custom(val) {
+                if (!val) return 'Tipe kendaraan wajib dipilih.';
+                return null;
+            }
+        },
+        brand: {
+            custom(val) {
+                if (!val || !val.trim()) return 'Merek kendaraan wajib diisi.';
+                return null;
+            }
+        },
+        model: {
+            custom(val) {
+                if (!val || !val.trim()) return 'Model kendaraan wajib diisi.';
+                return null;
+            }
+        },
+        year: {
+            custom(val) {
+                if (!val) return 'Tahun kendaraan wajib diisi.';
+                const y = parseInt(val);
+                if (isNaN(y))                            return 'Tahun harus berupa angka.';
+                if (y < 1900)                            return 'Tahun tidak boleh kurang dari 1900.';
+                if (y > new Date().getFullYear() + 1)    return 'Tahun tidak boleh melebihi tahun depan.';
+                return null;
+            }
+        },
+        color: {
+            custom(val) {
+                if (!val || !val.trim()) return 'Warna kendaraan wajib diisi.';
+                return null;
+            }
+        },
+        plate_number: {
+            custom(val) {
+                if (!val || !val.trim()) return 'Nomor plat kendaraan wajib diisi.';
+                return null;
+            }
+        },
+        price_per_day: {
+            custom(val) {
+                if (val === '' || val === null || val === undefined) return 'Harga per hari wajib diisi.';
+                if (isNaN(val))           return 'Harga harus berupa angka.';
+                if (parseFloat(val) < 0) return 'Harga tidak boleh negatif.';
+                return null;
+            }
+        },
+        seat_count: {
+            custom(val) {
+                if (!val) return null;
+                if (isNaN(val) || parseInt(val) < 1)  return 'Jumlah kursi minimal 1.';
+                if (parseInt(val) > 50)               return 'Jumlah kursi maksimal 50.';
+                return null;
+            }
+        },
+        engine_capacity: {
+            custom(val) {
+                if (!val) return null;
+                if (isNaN(val) || parseFloat(val) < 0) return 'Kapasitas mesin tidak valid, harus angka positif.';
+                return null;
+            }
+        },
+    };
+
+    /* ── Tampilkan / hapus error pada sebuah field ────────────── */
+    function showFieldError(fieldName, message) {
+        const el = document.querySelector('[name="' + fieldName + '"]');
+        if (!el) return;
+
+        const filled = el.value !== '' && el.value !== null;
+        el.classList.toggle('is-invalid', !!message);
+        el.classList.toggle('is-valid',   !message && filled);
+
+        const group = el.closest('.kd-form-group') || el.parentElement;
+        const existing = group.querySelector('.kd-error.js-error');
+        if (existing) existing.remove();
+
+        if (message) {
+            const p = document.createElement('p');
+            p.className = 'kd-error js-error';
+            p.textContent = message;
+            el.insertAdjacentElement('afterend', p);
+        }
+    }
+
+    /* ── Validasi satu field, return true jika valid ──────────── */
+    function validateField(name, value) {
+        const rule = rules[name];
+        if (!rule) return true;
+        const errMsg = rule.custom ? rule.custom(value) : null;
+        showFieldError(name, errMsg);
+        return !errMsg;
+    }
+
+    /* ── Pasang listener blur + input untuk semua field ──────── */
+    Object.keys(rules).forEach(function(name) {
+        const el = document.querySelector('[name="' + name + '"]');
+        if (!el) return;
+
+        el.addEventListener('blur', function() {
+            validateField(name, el.value);
+        });
+        el.addEventListener('input', function() {
+            if (el.classList.contains('is-invalid')) {
+                validateField(name, el.value);
+            }
+        });
+        if (el.tagName === 'SELECT') {
+            el.addEventListener('change', function() {
+                validateField(name, el.value);
+            });
+        }
+    });
+
+    /* ══════════════════════════════════════════════════════════
+       VALIDASI FOTO
+       ══════════════════════════════════════════════════════════ */
+    const MAX_FILE_SIZE  = 2 * 1024 * 1024; // 2 MB
+    const ALLOWED_TYPES  = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+
+    function showFotoError(message) {
+        const zone      = document.getElementById('uploadZone');
+        const container = zone.parentElement;
+
+        // Hapus error lama
+        const existing = container.querySelector('.kd-error.js-foto-error');
+        if (existing) existing.remove();
+
+        if (message) {
+            zone.classList.add('is-invalid');
+            zone.classList.remove('dragover');
+            const p = document.createElement('p');
+            p.className = 'kd-error js-foto-error';
+            p.textContent = message;
+            zone.insertAdjacentElement('afterend', p);
+        } else {
+            zone.classList.remove('is-invalid');
+        }
+    }
+
+    function validateFoto() {
+        if (newFiles.length === 0) {
+            showFotoError('Foto kendaraan wajib diupload minimal 1 foto.');
+            return false;
+        }
+        for (let i = 0; i < newFiles.length; i++) {
+            const file = newFiles[i];
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                showFotoError('File "' + file.name + '" bukan format yang valid. Gunakan JPG, PNG, atau GIF.');
+                return false;
+            }
+            if (file.size > MAX_FILE_SIZE) {
+                showFotoError('File "' + file.name + '" melebihi batas ukuran maksimal 2MB.');
+                return false;
+            }
+        }
+        showFotoError(null);
+        return true;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       PREVIEW FOTO
+       ══════════════════════════════════════════════════════════ */
+    let newFiles = [];
+    const previewThumb = document.getElementById('previewThumb');
+
+    window.previewImages = function(event) {
+        newFiles = newFiles.concat(Array.from(event.target.files)).slice(0, 8);
+        renderPreview();
+        validateFoto();
+    };
+
+    window.handleDrop = function(event) {
+        event.preventDefault();
+        document.getElementById('uploadZone').classList.remove('dragover');
+        const dropped = Array.from(event.dataTransfer.files).filter(function(f) {
+            return f.type.startsWith('image/');
+        });
+        newFiles = newFiles.concat(dropped).slice(0, 8);
+        renderPreview();
+        validateFoto();
+    };
+
+    window.removePreview = function(idx) {
+        newFiles.splice(idx, 1);
+        renderPreview();
+        validateFoto();
+    };
+
+    function renderPreview() {
+        const container = document.getElementById('imagePreview');
+        container.innerHTML = '';
+
+        newFiles.forEach(function(file, idx) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const wrap = document.createElement('div');
+                wrap.className = 'kd-preview-item';
+                wrap.innerHTML =
+                    '<img src="' + e.target.result + '" alt="Preview">' +
+                    (idx === 0
+                        ? '<span class="kd-preview-main">Utama</span>'
+                        : '<span class="kd-preview-badge">Foto ' + (idx + 1) + '</span>') +
+                    '<button type="button" class="kd-preview-rm" onclick="removePreview(' + idx + ')">✕</button>';
+                container.appendChild(wrap);
+
+                if (idx === 0) {
+                    previewThumb.innerHTML = '<img src="' + e.target.result + '" alt="Utama">';
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        if (newFiles.length === 0) {
+            previewThumb.innerHTML = '<span>🚗</span>';
+        }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       PREVIEW REAL-TIME SIDEBAR
+       ══════════════════════════════════════════════════════════ */
+    const brandInput   = document.getElementById('brand');
+    const modelInput   = document.getElementById('model');
+    const plateInput   = document.getElementById('plate_number');
+    const yearInput    = document.getElementById('year');
+    const colorInput   = document.getElementById('color');
+    const typeSelect   = document.getElementById('type');
+    const fuelSelect   = document.getElementById('fuel_type');
+    const transSelect  = document.getElementById('transmission');
+    const seatInput    = document.getElementById('seat_count');
+    const priceInput   = document.getElementById('price_per_day');
+    const pricePreview = document.getElementById('pricePreview');
+    const previewName  = document.getElementById('previewName');
+    const previewPlate = document.getElementById('previewPlate');
 
     function updatePreview() {
         const b = brandInput.value.trim();
         const m = modelInput.value.trim();
         previewName.textContent  = (b || m) ? (b + ' ' + m).trim() : 'Nama Kendaraan';
         previewPlate.textContent = plateInput.value.trim() || 'Nomor Plat';
-        previewPlate.style.color = plateInput.value.trim() ? '#212529' : '#9ca3af';
-        previewPlate.style.borderStyle = plateInput.value.trim() ? 'solid' : 'dashed';
+        previewPlate.style.color       = plateInput.value.trim() ? '#212529' : '#9ca3af';
+        previewPlate.style.borderStyle = plateInput.value.trim() ? 'solid'   : 'dashed';
 
-        set('previewYear',         yearInput.value || null);
-        set('previewColor',        colorInput.value || null);
-        set('previewType',         typeSelect.options[typeSelect.selectedIndex]?.text.replace(/^[^\s]+ /, '') || null);
-        set('previewFuel',         fuelSelect.value || null);
-        set('previewTransmission', transSelect.value || null);
-        set('previewSeat',         seatInput.value ? seatInput.value + ' orang' : null);
+        setText('previewYear',         yearInput.value  || null);
+        setText('previewColor',        colorInput.value || null);
+        setText('previewType',         typeSelect.options[typeSelect.selectedIndex]?.text.replace(/^[^\s]+ /, '') || null);
+        setText('previewFuel',         fuelSelect.value  || null);
+        setText('previewTransmission', transSelect.value || null);
+        setText('previewSeat',         seatInput.value ? seatInput.value + ' orang' : null);
 
         if (priceInput.value) {
             document.getElementById('previewPrice').textContent = formatRp(priceInput.value);
@@ -617,101 +851,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
     [brandInput, modelInput, plateInput, yearInput, colorInput,
      typeSelect, fuelSelect, transSelect, seatInput, priceInput]
-        .forEach(el => el && el.addEventListener('input', updatePreview));
+        .forEach(function(el) { if (el) el.addEventListener('input', updatePreview); });
 
-    /* ── Preview foto ───────────────────────────────────────── */
-    let newFiles = [];
-    const previewThumb = document.getElementById('previewThumb');
+    /* ══════════════════════════════════════════════════════════
+       SUBMIT — VALIDASI SEMUA SEBELUM KIRIM
+       ══════════════════════════════════════════════════════════ */
+    document.getElementById('createForm').addEventListener('submit', function(e) {
+        let formValid = true;
 
-    window.previewImages = function (event) {
-        newFiles = newFiles.concat(Array.from(event.target.files)).slice(0, 8);
-        renderPreview();
-    };
+        // 1. Validasi foto
+        if (!validateFoto()) formValid = false;
 
-    window.handleDrop = function (event) {
-        event.preventDefault();
-        document.getElementById('uploadZone').classList.remove('dragover');
-        const dropped = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-        newFiles = newFiles.concat(dropped).slice(0, 8);
-        renderPreview();
-    };
-
-    function renderPreview() {
-        const container = document.getElementById('imagePreview');
-        container.innerHTML = '';
-        newFiles.forEach(function (file, idx) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const wrap = document.createElement('div');
-                wrap.className = 'kd-preview-item';
-                wrap.innerHTML =
-                    '<img src="' + e.target.result + '" alt="Preview">' +
-                    (idx === 0
-                        ? '<span class="kd-preview-main">Utama</span>'
-                        : '<span class="kd-preview-badge">Foto ' + (idx + 1) + '</span>') +
-                    '<button type="button" class="kd-preview-rm" onclick="removePreview(' + idx + ')">✕</button>';
-                container.appendChild(wrap);
-
-                /* Update sidebar thumb with first image */
-                if (idx === 0) {
-                    previewThumb.innerHTML = '<img src="' + e.target.result + '" alt="Utama">';
-                }
-            };
-            reader.readAsDataURL(file);
+        // 2. Validasi semua field
+        Object.keys(rules).forEach(function(name) {
+            const el = document.querySelector('[name="' + name + '"]');
+            if (el && !validateField(name, el.value)) {
+                formValid = false;
+            }
         });
 
-        /* Reset thumb if no files */
-        if (newFiles.length === 0) {
-            previewThumb.innerHTML = '<span>🚗</span>';
+        if (!formValid) {
+            e.preventDefault();
+            // Scroll ke error pertama
+            const firstErr = document.querySelector('.js-foto-error, .is-invalid');
+            if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
         }
-    }
 
-    window.removePreview = function (idx) {
-        newFiles.splice(idx, 1);
-        renderPreview();
-    };
-
-    /* ── Reset form ─────────────────────────────────────────── */
-    document.getElementById('btnReset').addEventListener('click', function () {
-        if (!confirm('Reset semua data yang sudah diisi?')) return;
-        document.getElementById('createForm').reset();
-        newFiles = [];
-        document.getElementById('imagePreview').innerHTML = '';
-        document.getElementById('images').value = '';
-        previewThumb.innerHTML = '<span>🚗</span>';
-        previewName.textContent  = 'Nama Kendaraan';
-        previewPlate.textContent = 'Nomor Plat';
-        previewPlate.style.color = '#9ca3af';
-        previewPlate.style.borderStyle = 'dashed';
-        ['previewYear','previewColor','previewType','previewFuel',
-         'previewTransmission','previewSeat','previewPrice'].forEach(id => set(id, null));
-        pricePreview.textContent = '';
-    });
-
-    /* ── Cegah double submit ────────────────────────────────── */
-    document.getElementById('createForm').addEventListener('submit', function () {
+        // Cegah double submit
         const btn = document.getElementById('btnSubmit');
         btn.disabled = true;
         btn.innerHTML = '<span class="kd-spinner"></span> Menyimpan...';
     });
 
-    /* ── Auto dismiss alerts ─────────────────────────────────── */
+    /* ══════════════════════════════════════════════════════════
+       RESET FORM
+       ══════════════════════════════════════════════════════════ */
+    document.getElementById('btnReset').addEventListener('click', function() {
+        if (!confirm('Reset semua data yang sudah diisi?')) return;
+
+        document.getElementById('createForm').reset();
+        newFiles = [];
+        document.getElementById('imagePreview').innerHTML = '';
+        document.getElementById('images').value = '';
+        previewThumb.innerHTML = '<span>🚗</span>';
+
+        // Reset preview sidebar
+        previewName.textContent  = 'Nama Kendaraan';
+        previewPlate.textContent = 'Nomor Plat';
+        previewPlate.style.color       = '#9ca3af';
+        previewPlate.style.borderStyle = 'dashed';
+        ['previewYear','previewColor','previewType','previewFuel',
+         'previewTransmission','previewSeat','previewPrice'].forEach(function(id) {
+            setText(id, null);
+        });
+        pricePreview.textContent = '';
+
+        // Bersihkan semua status validasi
+        document.querySelectorAll('.kd-input, .kd-select').forEach(function(el) {
+            el.classList.remove('is-valid', 'is-invalid');
+        });
+        document.querySelectorAll('.kd-error.js-error, .kd-error.js-foto-error').forEach(function(el) {
+            el.remove();
+        });
+        document.getElementById('uploadZone').classList.remove('is-invalid');
+    });
+
+    /* ══════════════════════════════════════════════════════════
+       AUTO DISMISS ALERTS
+       ══════════════════════════════════════════════════════════ */
     @if(session('success') || session('error'))
-    setTimeout(function () {
-        document.querySelectorAll('.kd-alert').forEach(function (el) {
+    setTimeout(function() {
+        document.querySelectorAll('.kd-alert').forEach(function(el) {
             el.style.transition = 'opacity 0.5s';
-            el.style.opacity = '0';
-            setTimeout(() => el.remove(), 500);
+            el.style.opacity    = '0';
+            setTimeout(function() { el.remove(); }, 500);
         });
     }, 5000);
     @endif
 
-    /* ── Clear after success ────────────────────────────────── */
+    /* ── Bersihkan form setelah sukses ──────────────────────── */
     @if(session('success'))
     document.getElementById('createForm').reset();
     document.getElementById('imagePreview').innerHTML = '';
     document.getElementById('images').value = '';
     @endif
+
 });
 </script>
 @endpush

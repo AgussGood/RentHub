@@ -83,7 +83,7 @@ class BookingApiController extends Controller
      */
     public function history()
     {
-        $bookings = Booking::with(['kendaraan.images', 'payment'])
+        $bookings = Booking::with(['kendaraan.images', 'payment','pengembalian'])
             ->where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->get();
@@ -105,6 +105,7 @@ class BookingApiController extends Controller
             'kendaraan.detail',
             'payment',
             'user',
+            'pengembalian'
         ])->where('user_id', auth()->id())->findOrFail($id);
 
         return response()->json([
